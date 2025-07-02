@@ -1,0 +1,27 @@
+{
+  "name": "MonopolyPay - Digital Banking for Board Games",
+  "short_name": "MonopolyPay",
+  "description": "Modern banking app for Monopoly games with secure transactions and real-time balance tracking",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#dc2626",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["games", "finance", "utilities"],
+  "lang": "en",
+  "dir": "ltr"
+}
