@@ -1,5 +1,8 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { authClient } from "@/lib/auth-client";
 
 export default function LoginPage() {
   return (
@@ -12,7 +15,9 @@ export default function LoginPage() {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-slate-900">MonopolyPay</h1>
-            <p className="text-slate-600 mt-2">Digital Banking for Board Games</p>
+            <p className="text-slate-600 mt-2">
+              Digital Banking for Board Games
+            </p>
           </div>
         </div>
 
@@ -22,6 +27,12 @@ export default function LoginPage() {
             <Button
               className="w-full h-12 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 shadow-sm"
               variant="outline"
+              onClick={async () =>
+                await authClient.signIn.social({
+                  provider: "google",
+                  callbackURL: "/home",
+                })
+              }
             >
               <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
                 <path
@@ -46,8 +57,10 @@ export default function LoginPage() {
           </CardContent>
         </Card>
 
-        <p className="text-center text-sm text-slate-500">Secure banking for your Monopoly games</p>
+        <p className="text-center text-sm text-slate-500">
+          Secure banking for your Monopoly games
+        </p>
       </div>
     </div>
-  )
+  );
 }
