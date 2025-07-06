@@ -68,16 +68,6 @@ function Header() {
           </div>
         </div>
       )}
-      {/* <div className="animate-fade-in">
-        <div className="space-y-1 border-t px-2 pt-2 pb-3 sm:px-3">
-          <div className="border-t pt-2">
-            <div className="px-3 py-2">
-              <div className="font-medium">user.name</div>
-            </div>
-          </div>
-        </div>
-      </div>
-       */}
     </nav>
   );
 }
