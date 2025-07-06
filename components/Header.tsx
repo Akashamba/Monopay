@@ -47,32 +47,37 @@ function Header() {
           ) : (
             <Link href="/sign-in">Sign In</Link>
           )}
-
-          {/* Mobile Navigation */}
-          {user && isMenuOpen && (
-            <div className="animate-fade-in">
-              <div className="space-y-1 border-t px-2 pt-2 pb-3 sm:px-3">
-                <div className="border-t pt-2">
-                  <div className="px-3 py-2">
-                    <div className="font-medium">{user.name}</div>
-                    <div className="text-muted-foreground text-sm">
-                      {user.email}
-                    </div>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start px-3"
-                    onClick={handleSignOut}
-                  >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Sign out
-                  </Button>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
+      {/* Mobile Navigation */}
+      {user && isMenuOpen && (
+        <div className="animate-fade-in">
+          <div className="space-y-1 border-t px-2 pt-2 pb-3 sm:px-3">
+            <div className="px-3 py-2">
+              <div className="font-medium">{user.name}</div>
+              <div className="text-muted-foreground text-sm">{user.email}</div>
+            </div>
+            <Button
+              variant="ghost"
+              className="w-full justify-start px-3"
+              onClick={handleSignOut}
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              Sign out
+            </Button>
+          </div>
+        </div>
+      )}
+      {/* <div className="animate-fade-in">
+        <div className="space-y-1 border-t px-2 pt-2 pb-3 sm:px-3">
+          <div className="border-t pt-2">
+            <div className="px-3 py-2">
+              <div className="font-medium">user.name</div>
+            </div>
+          </div>
+        </div>
+      </div>
+       */}
     </nav>
   );
 }
