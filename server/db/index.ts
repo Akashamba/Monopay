@@ -2,7 +2,9 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 
 import { readEnv } from "@/env";
-import * as schema from "./schema";
+import * as authSchema from "./auth-schema";
+import * as gameSchema from "./game-schema";
+import * as relations from "./relations";
 
 /**
  * Cache the database connection in development. This avoids creating a new connection on every HMR
@@ -27,11 +29,13 @@ function createConnection() {
     });
 
     // Test the connection
-    conn`SELECT 1`.then(() => {
-      console.log("Database connection successful!");
-    }).catch((error) => {
-      console.error("Database connection test failed:", error);
-    });
+    conn`SELECT 1`
+      .then(() => {
+        console.log("Database connection successful!");
+      })
+      .catch((error) => {
+        console.error("Database connection test failed:", error);
+      });
 
     return conn;
   } catch (error) {
@@ -44,4 +48,10 @@ console.log("Initializing database connection...");
 const conn = globalForDb.conn ?? createConnection();
 if (readEnv("NODE_ENV") !== "production") globalForDb.conn = conn;
 
-export const db = drizzle(conn, { schema });
+export const db = drizzle(conn, {
+  schema: {
+    ...authSchema,
+    ...gameSchema,
+    ...relations,
+  },
+});

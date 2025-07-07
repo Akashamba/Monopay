@@ -9,27 +9,6 @@ import { api } from "@/trpc/react";
 import { useParams } from "next/navigation";
 
 export default function WaitingRoomPage() {
-  const players = [
-    {
-      id: 1,
-      name: "John Doe",
-      avatar: "/placeholder.svg?height=40&width=40",
-      isCreator: true,
-    },
-    {
-      id: 2,
-      name: "Sarah Smith",
-      avatar: "/placeholder.svg?height=40&width=40",
-      isCreator: false,
-    },
-    {
-      id: 3,
-      name: "Mike Johnson",
-      avatar: "/placeholder.svg?height=40&width=40",
-      isCreator: false,
-    },
-  ];
-
   const params = useParams();
   const gameId = params?.gameId as string;
 
@@ -54,6 +33,7 @@ export default function WaitingRoomPage() {
       </div>
     );
   } else if (game) {
+    const { players } = game;
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
         {/* Header */}
@@ -106,10 +86,10 @@ export default function WaitingRoomPage() {
                     <div className="flex items-center space-x-3">
                       <Avatar className="w-10 h-10">
                         <AvatarImage
-                          src={player.avatar || "/placeholder.svg"}
+                          src={player.user.image || "/placeholder.svg"}
                         />
                         <AvatarFallback className="bg-blue-100 text-blue-600">
-                          {player.name
+                          {player.user.name
                             .split(" ")
                             .map((n) => n[0])
                             .join("")}
@@ -117,7 +97,7 @@ export default function WaitingRoomPage() {
                       </Avatar>
                       <div className="flex-1">
                         <p className="font-medium text-slate-900">
-                          {player.name}
+                          {player.user.name}
                         </p>
                         {player.isCreator && (
                           <div className="flex items-center space-x-1 mt-1">

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-import { games, players, transactions } from "../../db/schema";
+import { games, players, transactions } from "../../db/game-schema";
 import { eq, and, desc } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 
@@ -160,12 +160,11 @@ export const gameRouter = createTRPCRouter({
       const game = await ctx.db.query.games.findFirst({
         where: eq(games.id, input.gameId),
         with: {
-          players: true,
-          // players: {
-          //   with: {
-          //     user: true, // Include user information
-          //   },
-          // },
+          players: {
+            with: {
+              user: true, // Include user information
+            },
+          },
         },
       });
 

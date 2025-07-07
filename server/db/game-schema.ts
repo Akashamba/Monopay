@@ -12,7 +12,6 @@ import {
 } from "drizzle-orm/pg-core";
 
 import { createId } from "@paralleldrive/cuid2";
-import { relations } from "drizzle-orm";
 import { user } from "./auth-schema";
 
 /**
@@ -47,10 +46,6 @@ export const games = createTable(
   ]
 );
 
-export const gamesRelations = relations(games, ({ many }) => ({
-  players: many(players),
-}));
-
 export const players = createTable(
   "player",
   () => ({
@@ -73,17 +68,6 @@ export const players = createTable(
     index("player_game_user_idx").on(t.gameId, t.userId),
   ]
 );
-
-export const playersRelations = relations(players, ({ one }) => ({
-  game: one(games, {
-    fields: [players.gameId],
-    references: [games.id],
-  }),
-  user: one(user, {
-    fields: [players.userId],
-    references: [user.id],
-  }),
-}));
 
 export const transactions = createTable(
   "transaction",
@@ -109,21 +93,6 @@ export const transactions = createTable(
     index("transaction_created_idx").on(t.createdAt),
   ]
 );
-
-export const transactionsRelations = relations(transactions, ({ one }) => ({
-  game: one(games, {
-    fields: [transactions.gameId],
-    references: [games.id],
-  }),
-  fromPlayer: one(players, {
-    fields: [transactions.fromPlayerId],
-    references: [players.id],
-  }),
-  toPlayer: one(players, {
-    fields: [transactions.toPlayerId],
-    references: [players.id],
-  }),
-}));
 
 // Types for tRPC
 export type Game = typeof games.$inferSelect;
