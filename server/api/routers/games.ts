@@ -391,3 +391,5 @@ export const gameRouter = createTRPCRouter({
       return txs;
     }),
 });
+
+export type GameWithPlayers = Awaited<ReturnType<typeof gameRouter.getGame>>;
