@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "../globals.css";
 import Header from "@/components/Header";
+import { TRPCReactProvider } from "@/trpc/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,19 +29,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <head>
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="MonopolyPay" />
-        <link rel="apple-touch-icon" href="/icon-192x192.png" />
-      </head>
-      <body className={inter.className}>
-        <div className="max-w-sm mx-auto min-h-screen bg-white">
-          <Header />
-          {children}
-        </div>
-      </body>
-    </html>
+    <TRPCReactProvider>
+      <html lang="en">
+        <head>
+          <meta name="apple-mobile-web-app-capable" content="yes" />
+          <meta
+            name="apple-mobile-web-app-status-bar-style"
+            content="default"
+          />
+          <meta name="apple-mobile-web-app-title" content="MonopolyPay" />
+          <link rel="apple-touch-icon" href="/icon-192x192.png" />
+        </head>
+        <body className={inter.className}>
+          <div className="max-w-sm mx-auto min-h-screen bg-white">
+            <Header />
+            {children}
+          </div>
+        </body>
+      </html>
+    </TRPCReactProvider>
   );
 }

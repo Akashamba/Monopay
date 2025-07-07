@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { authClient } from "@/lib/auth-client";
+import { api } from "@/trpc/react";
 import { Loader2, Plus, Users } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -11,6 +12,41 @@ export default function HomePage() {
   const user = authClient.useSession().data?.user;
   const isUserLoading = authClient.useSession().isPending;
   const router = useRouter();
+  const utils = api.useUtils();
+
+  const createGame = api.games.create.useMutation({
+    onSuccess: () => {
+      // Invalidate and refetch articles query
+      // utils.games.getGame.invalidate().catch((error) => {
+      //   console.error("Failed to invalidate cache:", error);
+      // });
+      console.log("Game created successfully!");
+    },
+    onError: (error) => {
+      console.log(`Failed to create game: ${error.message}`);
+    },
+  });
+
+  async function handleCreateGame() {
+    try {
+      const result = await createGame.mutateAsync({
+        startingBalance: 1500, // providing explicit starting balance
+      });
+
+      if (result.gameId) {
+        router.push(`/waiting-room/${result.gameId}`);
+      } else {
+        console.error("Game created but no gameId returned");
+      }
+    } catch (error) {
+      console.error("Failed to create game:", error);
+      if (error instanceof Error) {
+        alert(`Failed to create game: ${error.message}`);
+      } else {
+        alert("Failed to create game. Please try again.");
+      }
+    }
+  }
 
   if (isUserLoading) {
     return (
@@ -35,7 +71,7 @@ export default function HomePage() {
 
             {/* Action Cards */}
             <div className="space-y-4">
-              <Link href="/create-game">
+              <Button onClick={handleCreateGame} variant="ghost">
                 <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow cursor-pointer">
                   <CardContent className="p-6">
                     <div className="flex items-center space-x-4">
@@ -53,7 +89,7 @@ export default function HomePage() {
                     </div>
                   </CardContent>
                 </Card>
-              </Link>
+              </Button>
 
               <Link href="/join-game">
                 <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow cursor-pointer">
