@@ -199,7 +199,7 @@ export const gameRouter = createTRPCRouter({
 
       await ctx.db
         .update(games)
-        .set({ status: "active", updatedAt: new Date() })
+        .set({ status: "ongoing", updatedAt: new Date() })
         .where(eq(games.id, input.gameId));
 
       return { success: true };

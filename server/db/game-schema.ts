@@ -35,7 +35,9 @@ export const games = createTable(
     startingBalance: decimal("starting_balance", { precision: 10, scale: 2 })
       .notNull()
       .default("1500.00"),
-    status: text("status").notNull().default("waiting"),
+    status: text("status", { enum: ["waiting", "ongoing", "completed"] })
+      .notNull()
+      .default("waiting"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   }),

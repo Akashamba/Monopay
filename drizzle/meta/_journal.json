@@ -15,6 +15,13 @@
       "when": 1751904651946,
       "tag": "0001_drop_old_tables",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1751927836100,
+      "tag": "0002_steady_sunfire",
+      "breakpoints": true
     }
   ]
 }
