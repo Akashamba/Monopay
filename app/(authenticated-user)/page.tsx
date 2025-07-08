@@ -12,13 +12,18 @@ export default function HomePage() {
   const user = authClient.useSession().data?.user;
   const isUserLoading = authClient.useSession().isPending;
   const router = useRouter();
+  const utils = api.useUtils();
+
+  const { data: userGames, isLoading: isGamesLoading } = api.games.getUserGames.useQuery(undefined, {
+    enabled: !!user,
+  });
 
   const createGame = api.games.create.useMutation({
     onSuccess: () => {
-      // Invalidate and refetch articles query
-      // utils.games.getGame.invalidate().catch((error) => {
-      //   console.error("Failed to invalidate cache:", error);
-      // });
+      // Invalidate and refetch games query
+      utils.games.getUserGames.invalidate().catch((error: Error) => {
+        console.error("Failed to invalidate cache:", error);
+      });
       console.log("Game created successfully!");
     },
     onError: (error) => {
@@ -129,23 +134,45 @@ export default function HomePage() {
               <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
                 Recent Games
               </h2>
-              <Card className="border-0 shadow-sm dark:bg-slate-900 dark:shadow-slate-900/50">
-                <CardContent className="p-4">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <p className="font-medium text-slate-900 dark:text-white">
-                        Family Game Night
-                      </p>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">
-                        2 hours ago • 4 players
-                      </p>
-                    </div>
-                    <Button variant="outline" size="sm">
-                      View
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+              {isGamesLoading ? (
+                <div className="flex justify-center p-8">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+              ) : userGames && userGames.length > 0 ? (
+                <div className="space-y-3">
+                  {userGames.map((game) => (
+                    <Card key={game.id} className="border-0 shadow-sm dark:bg-slate-900 dark:shadow-slate-900/50">
+                      <CardContent className="p-4">
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <p className="font-medium text-slate-900 dark:text-white">
+                              Game #{game.code}
+                            </p>
+                            <p className="text-sm text-slate-600 dark:text-slate-400">
+                              {new Date(game.createdAt).toLocaleDateString()} • {game.players.length} players • {game.status}
+                            </p>
+                          </div>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => router.push(`/game/${game.id}`)}
+                          >
+                            View
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                <Card className="border-0 shadow-sm dark:bg-slate-900 dark:shadow-slate-900/50">
+                  <CardContent className="p-6 text-center">
+                    <p className="text-slate-600 dark:text-slate-400">
+                      No games yet. Create or join a game to get started!
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           </div>
         </div>
