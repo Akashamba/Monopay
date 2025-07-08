@@ -390,6 +390,27 @@ export const gameRouter = createTRPCRouter({
 
       return txs;
     }),
+
+  // Get all games for current user
+  getUserGames: protectedProcedure.query(async ({ ctx }) => {
+    const userGames = await ctx.db.query.players.findMany({
+      where: eq(players.userId, ctx.user.id),
+      with: {
+        game: {
+          with: {
+            players: {
+              with: {
+                user: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: [desc(players.joinedAt)],
+    });
+
+    return userGames.map((player) => player.game);
+  }),
 });
 
 export type GameWithPlayers = Awaited<ReturnType<typeof gameRouter.getGame>>;
