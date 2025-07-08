@@ -76,9 +76,9 @@ function WaitingRoom(game: GameWithPlayers) {
                   <span className="text-3xl font-bold text-red-600 dark:text-red-400 tracking-wider">
                     {game?.code}
                   </span>
-                  <Button variant="ghost" size="sm">
+                  {/* <Button variant="ghost" size="sm">
                     <Copy className="w-4 h-4" />
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
               <p className="text-sm text-slate-500 dark:text-slate-400">
