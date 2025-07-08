@@ -348,6 +348,58 @@ export const gameRouter = createTRPCRouter({
       return { success: true };
     }),
 
+  // Pay money to bank
+  payToBank: protectedProcedure
+    .input(
+      z.object({
+        gameId: z.string(),
+        amount: z.number().positive(),
+        description: z.string().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const player = await ctx.db.query.players.findFirst({
+        where: and(
+          eq(players.gameId, input.gameId),
+          eq(players.userId, ctx.user.id)
+        ),
+      });
+
+      if (!player) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Player not found in game",
+        });
+      }
+
+      if (parseFloat(player.balance) < input.amount) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Insufficient balance",
+        });
+      }
+
+      // Update player balance
+      await ctx.db
+        .update(players)
+        .set({
+          balance: (parseFloat(player.balance) - input.amount).toString(),
+        })
+        .where(eq(players.id, player.id));
+
+      // Record transaction
+      await ctx.db.insert(transactions).values({
+        gameId: input.gameId,
+        fromPlayerId: player.id,
+        toPlayerId: null, // null = to bank
+        amount: input.amount.toString(),
+        type: "bank_payment",
+        description: input.description || `Bank payment by ${ctx.user.name}`,
+      });
+
+      return { success: true };
+    }),
+
   // Get leaderboard
   getLeaderboard: protectedProcedure
     .input(z.object({ gameId: z.string() }))
