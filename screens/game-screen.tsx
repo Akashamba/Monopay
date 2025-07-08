@@ -30,6 +30,8 @@ function GameScreen(game: GameWithPlayers) {
   const [selectedPlayer, setSelectedPlayer] = useState("");
   const [transferType, setTransferType] = useState("player");
   const user = authClient.useSession().data?.user;
+  const { data: transactionHistory, isLoading: isTransactionHistoryLoading   } =
+    api.games.getTransactions.useQuery({ gameId: game.id });
 
   const transferToPlayer = api.games.transfer.useMutation({
     onSuccess: () => {
@@ -396,6 +398,104 @@ function GameScreen(game: GameWithPlayers) {
                 ₩50
               </Button>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Transaction History */}
+        <Card className="border-0 shadow-sm dark:bg-slate-900 dark:shadow-slate-900/50">
+          <CardContent className="p-4">
+            <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">
+              Transaction History
+            </p>
+            {isTransactionHistoryLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+              </div>
+            ) : transactionHistory && transactionHistory.length > 0 ? (
+              <div className="space-y-3">
+                {transactionHistory.map((tx) => {
+                  const isReceiving = tx.toPlayerId === players.find(p => p.userId === user?.id)?.id;
+                  const isBank = !tx.fromPlayerId || !tx.toPlayerId;
+                  const otherPlayerData = isReceiving
+                    ? players.find(p => p.id === tx.fromPlayerId)
+                    : players.find(p => p.id === tx.toPlayerId);
+
+                  return (
+                    <div
+                      key={tx.id}
+                      className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-lg"
+                    >
+                      <div className="flex items-center space-x-3">
+                        {isBank ? (
+                          <div className="relative">
+                            <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+                              <Building2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                            </div>
+                            <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
+                              {tx.type === 'bank_request' ? (
+                                <ArrowDownLeft className="w-3 h-3 text-green-600 dark:text-green-400" />
+                              ) : (
+                                <ArrowUpRight className="w-3 h-3 text-red-600 dark:text-red-400" />
+                              )}
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="relative">
+                            <Avatar className="w-8 h-8">
+                              <AvatarImage src={otherPlayerData?.user.image ?? ""} />
+                              <AvatarFallback className="bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 text-xs">
+                                {otherPlayerData?.user.name
+                                  .split(" ")
+                                  .map((n) => n[0])
+                                  .join("")}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
+                              {isReceiving ? (
+                                <ArrowDownLeft className="w-3 h-3 text-green-600 dark:text-green-400" />
+                              ) : (
+                                <ArrowUpRight className="w-3 h-3 text-red-600 dark:text-red-400" />
+                              )}
+                            </div>
+                          </div>
+                        )}
+                        <div>
+                          <p className="text-sm font-medium text-slate-900 dark:text-white">
+                            {isBank
+                              ? tx.type === 'bank_request'
+                                ? 'Collected from Bank'
+                                : 'Paid to Bank'
+                              : isReceiving
+                              ? `Received from ${otherPlayerData?.user.name}`
+                              : `Sent to ${otherPlayerData?.user.name}`}
+                          </p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">
+                            {new Date(tx.createdAt).toLocaleDateString('en-US', {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </p>
+                        </div>
+                      </div>
+                      <div className={`text-sm font-medium ${
+                        isReceiving || tx.type === 'bank_request'
+                          ? 'text-green-600 dark:text-green-400'
+                          : 'text-red-600 dark:text-red-400'
+                      }`}>
+                        {isReceiving || tx.type === 'bank_request' ? '+' : '-'}₩{Number(tx.amount).toLocaleString()}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-slate-500 dark:text-slate-400">
+                No transactions yet
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
