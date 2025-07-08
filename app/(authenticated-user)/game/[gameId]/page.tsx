@@ -21,7 +21,7 @@ export default function GamePage() {
 
   if (isLoading)
     return (
-      <div className="w-full min-h-screen flex justify-center items-center bg-gradient-to-br from-slate-50 to-blue-50">
+      <div className="w-full min-h-screen flex justify-center items-center bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950">
         <Loader2 className="h-20 w-20 animate-spin text-primary" />
       </div>
     );
