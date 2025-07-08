@@ -37,7 +37,7 @@ export default function JoinGamePage() {
       console.log("Game joined successfully!");
     },
     onError: (error) => {
-      console.log(`Failed to create game: ${error.message}`);
+      console.log(`Failed to join game: ${error.message}`);
     },
   });
 

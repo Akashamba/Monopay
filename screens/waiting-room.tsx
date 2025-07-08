@@ -4,19 +4,61 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Copy, Crown, Loader2, Users } from "lucide-react";
-import { api } from "@/trpc/react";
-import { useParams } from "next/navigation";
 import { GameWithPlayers } from "@/server/api/routers/games";
+import { authClient } from "@/lib/auth-client";
+import { api } from "@/trpc/react";
 
 function WaitingRoom(game: GameWithPlayers) {
   const { players } = game;
+  const user = authClient.useSession().data?.user;
+
+  const currentUserIsCreator = game.players.find(
+    (player) => player.isCreator && player.userId === user?.id
+  );
+
+  const startGame = api.games.startGame.useMutation({
+    onSuccess: () => {
+      // Invalidate and refetch articles query
+      // utils.games.getGame.invalidate().catch((error) => {
+      //   console.error("Failed to invalidate cache:", error);
+      // });
+      console.log("Game started successfully!");
+    },
+    onError: (error) => {
+      console.log(`Failed to start game: ${error.message}`);
+    },
+  });
+
+  async function handleStartGame() {
+    try {
+      const result = await startGame.mutateAsync({ gameId: game.id });
+
+      if (result.success) {
+        // refetch game
+      } else {
+        console.error("Game started, but there is an error");
+      }
+    } catch (error) {
+      console.error("Failed to start game:", error);
+      if (error instanceof Error) {
+        alert(`Failed to start game: ${error.message}`);
+      } else {
+        alert("Failed to start game. Please try again.");
+      }
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
       {/* Header */}
       <div className="p-4 bg-white dark:bg-slate-950 shadow-sm">
         <div className="text-center">
-          <h1 className="text-lg font-semibold text-slate-900 dark:text-white">Game Lobby</h1>
-          <p className="text-sm text-slate-600 dark:text-slate-400">Waiting for players to join</p>
+          <h1 className="text-lg font-semibold text-slate-900 dark:text-white">
+            Game Lobby
+          </h1>
+          <p className="text-sm text-slate-600 dark:text-slate-400">
+            Waiting for players to join
+          </p>
         </div>
       </div>
 
@@ -27,7 +69,9 @@ function WaitingRoom(game: GameWithPlayers) {
           <CardContent className="p-6">
             <div className="text-center space-y-4">
               <div>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">Game Code</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">
+                  Game Code
+                </p>
                 <div className="flex items-center justify-center space-x-2">
                   <span className="text-3xl font-bold text-red-600 dark:text-red-400 tracking-wider">
                     {game?.code}
@@ -55,7 +99,10 @@ function WaitingRoom(game: GameWithPlayers) {
 
           <div className="space-y-3">
             {players.map((player) => (
-              <Card key={player.id} className="border-0 shadow-sm dark:bg-slate-900 dark:shadow-slate-900/50">
+              <Card
+                key={player.id}
+                className="border-0 shadow-sm dark:bg-slate-900 dark:shadow-slate-900/50"
+              >
                 <CardContent className="p-4">
                   <div className="flex items-center space-x-3">
                     <Avatar className="w-10 h-10">
@@ -118,9 +165,19 @@ function WaitingRoom(game: GameWithPlayers) {
         {/* Start Game Button */}
         <Button
           className="w-full h-12 bg-red-600 hover:bg-red-700 text-white font-semibold"
-          disabled={players.length < 2}
+          disabled={
+            players.length < 2 || !currentUserIsCreator || startGame.isPending
+          }
+          onClick={handleStartGame}
         >
-          Start Game
+          {startGame.isPending ? (
+            <>
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              Starting...
+            </>
+          ) : (
+            "Start Game"
+          )}
         </Button>
       </div>
     </div>

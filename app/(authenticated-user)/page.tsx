@@ -12,7 +12,6 @@ export default function HomePage() {
   const user = authClient.useSession().data?.user;
   const isUserLoading = authClient.useSession().isPending;
   const router = useRouter();
-  const utils = api.useUtils();
 
   const createGame = api.games.create.useMutation({
     onSuccess: () => {
@@ -66,14 +65,18 @@ export default function HomePage() {
               <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
                 Welcome Back!
               </h1>
-              <p className="text-slate-600 dark:text-slate-400">Ready to start a new game?</p>
+              <p className="text-slate-600 dark:text-slate-400">
+                Ready to start a new game?
+              </p>
             </div>
 
             {/* Action Cards */}
             <div className="space-y-4">
-              <div 
-                onClick={createGame.isPending ? undefined : handleCreateGame} 
-                className={`cursor-pointer ${createGame.isPending ? 'opacity-70' : ''}`}
+              <div
+                onClick={createGame.isPending ? undefined : handleCreateGame}
+                className={`cursor-pointer ${
+                  createGame.isPending ? "opacity-70" : ""
+                }`}
               >
                 <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow mb-2 dark:bg-slate-900 dark:shadow-slate-900/50">
                   <CardContent className="p-6">
@@ -87,7 +90,9 @@ export default function HomePage() {
                       </div>
                       <div className="flex-1">
                         <h3 className="font-semibold text-slate-900 dark:text-white">
-                          {createGame.isPending ? "Creating Game..." : "Create Game"}
+                          {createGame.isPending
+                            ? "Creating Game..."
+                            : "Create Game"}
                         </h3>
                         <p className="text-sm text-slate-600 dark:text-slate-400">
                           Start a new Monopoly banking session
