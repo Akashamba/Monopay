@@ -71,16 +71,23 @@ export default function HomePage() {
 
             {/* Action Cards */}
             <div className="space-y-4">
-              <div onClick={handleCreateGame} className="cursor-pointer">
+              <div 
+                onClick={createGame.isPending ? undefined : handleCreateGame} 
+                className={`cursor-pointer ${createGame.isPending ? 'opacity-70' : ''}`}
+              >
                 <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow mb-2">
                   <CardContent className="p-6">
                     <div className="flex items-center space-x-4">
                       <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
-                        <Plus className="w-6 h-6 text-red-600" />
+                        {createGame.isPending ? (
+                          <Loader2 className="w-6 h-6 text-red-600 animate-spin" />
+                        ) : (
+                          <Plus className="w-6 h-6 text-red-600" />
+                        )}
                       </div>
                       <div className="flex-1">
                         <h3 className="font-semibold text-slate-900">
-                          Create Game
+                          {createGame.isPending ? "Creating Game..." : "Create Game"}
                         </h3>
                         <p className="text-sm text-slate-600">
                           Start a new Monopoly banking session
