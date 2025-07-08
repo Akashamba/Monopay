@@ -6,7 +6,7 @@ import { authClient } from "@/lib/auth-client";
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-950 dark:to-blue-950 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-sm space-y-8">
         {/* Logo and App Name */}
         <div className="text-center space-y-4">
@@ -14,18 +14,18 @@ export default function LoginPage() {
             <span className="text-white text-2xl font-bold">M</span>
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">MonopolyPay</h1>
-            <p className="text-slate-600 mt-2">
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-50">MonopolyPay</h1>
+            <p className="text-slate-600 dark:text-slate-400 mt-2">
               Digital Banking for Board Games
             </p>
           </div>
         </div>
 
         {/* Sign In Card */}
-        <Card className="border-0 shadow-xl">
+        <Card className="border-0 shadow-xl bg-white dark:bg-slate-900">
           <CardContent className="p-8">
             <Button
-              className="w-full h-12 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 shadow-sm"
+              className="w-full h-12 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 shadow-sm"
               variant="outline"
               onClick={async () =>
                 await authClient.signIn.social({
@@ -57,7 +57,7 @@ export default function LoginPage() {
           </CardContent>
         </Card>
 
-        <p className="text-center text-sm text-slate-500">
+        <p className="text-center text-sm text-slate-500 dark:text-slate-400">
           Secure banking for your Monopoly games
         </p>
       </div>
