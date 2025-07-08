@@ -32,14 +32,14 @@ function GameScreen(game: GameWithPlayers) {
   const { players } = game;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
       {/* Header */}
-      <div className="flex justify-between items-center p-4 bg-white shadow-sm">
+      <div className="flex justify-between items-center p-4 bg-white dark:bg-slate-950 shadow-sm">
         <div className="flex items-center space-x-3">
           <div className="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center">
             <span className="text-white text-sm font-bold">M</span>
           </div>
-          <span className="font-semibold text-slate-900">
+          <span className="font-semibold text-slate-900 dark:text-white">
             Game Code: #{game.code}
           </span>
         </div>
@@ -78,10 +78,10 @@ function GameScreen(game: GameWithPlayers) {
           </TabsList>
 
           <TabsContent value="player" className="space-y-4 mt-4">
-            <Card className="border-0 shadow-lg">
+            <Card className="border-0 shadow-lg dark:bg-slate-900 dark:shadow-slate-900/50">
               <CardContent className="p-6 space-y-4">
                 <div>
-                  <label className="text-sm font-medium text-slate-700 mb-2 block">
+                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 block">
                     Select Player
                   </label>
                   <Select
@@ -96,7 +96,7 @@ function GameScreen(game: GameWithPlayers) {
                         <SelectItem key={player.id} value={player.id}>
                           <div className="flex items-center space-x-2">
                             <Avatar className="w-6 h-6">
-                              <AvatarFallback className="text-xs bg-blue-100 text-blue-600">
+                              <AvatarFallback className="text-xs bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400">
                                 {player.user.name
                                   .split(" ")
                                   .map((n) => n[0])
@@ -104,7 +104,7 @@ function GameScreen(game: GameWithPlayers) {
                               </AvatarFallback>
                             </Avatar>
                             <span>{player.user.name}</span>
-                            <Badge variant="outline" className="ml-auto">
+                            <Badge variant="outline" className="ml-auto dark:border-slate-700 dark:text-slate-300">
                               ₩{player.balance.toLocaleString()}
                             </Badge>
                           </div>
@@ -115,7 +115,7 @@ function GameScreen(game: GameWithPlayers) {
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-slate-700 mb-2 block">
+                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 block">
                     Amount (₩)
                   </label>
                   <Input
@@ -137,7 +137,7 @@ function GameScreen(game: GameWithPlayers) {
                   </Button>
                   <Button
                     variant="outline"
-                    className="h-12 border-blue-200 text-blue-600 hover:bg-blue-50 bg-transparent"
+                    className="h-12 border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950 bg-transparent"
                     disabled={!selectedPlayer || !amount}
                   >
                     <ArrowDownLeft className="w-4 h-4 mr-2" />
@@ -149,16 +149,16 @@ function GameScreen(game: GameWithPlayers) {
           </TabsContent>
 
           <TabsContent value="bank" className="space-y-4 mt-4">
-            <Card className="border-0 shadow-lg">
+            <Card className="border-0 shadow-lg dark:bg-slate-900 dark:shadow-slate-900/50">
               <CardContent className="p-6 space-y-4">
-                <div className="text-center p-4 bg-slate-50 rounded-lg">
-                  <Building2 className="w-8 h-8 text-slate-600 mx-auto mb-2" />
-                  <p className="font-medium text-slate-900">Monopoly Bank</p>
-                  <p className="text-sm text-slate-600">Unlimited funds</p>
+                <div className="text-center p-4 bg-slate-50 dark:bg-slate-800 rounded-lg">
+                  <Building2 className="w-8 h-8 text-slate-600 dark:text-slate-400 mx-auto mb-2" />
+                  <p className="font-medium text-slate-900 dark:text-white">Monopoly Bank</p>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">Unlimited funds</p>
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-slate-700 mb-2 block">
+                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 block">
                     Amount (₩)
                   </label>
                   <Input
@@ -180,7 +180,7 @@ function GameScreen(game: GameWithPlayers) {
                   </Button>
                   <Button
                     variant="outline"
-                    className="h-12 border-red-200 text-red-600 hover:bg-red-50 bg-transparent"
+                    className="h-12 border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950 bg-transparent"
                     disabled={!amount}
                   >
                     <ArrowUpRight className="w-4 h-4 mr-2" />
@@ -193,9 +193,9 @@ function GameScreen(game: GameWithPlayers) {
         </Tabs>
 
         {/* Quick Actions */}
-        <Card className="border-0 shadow-sm">
+        <Card className="border-0 shadow-sm dark:bg-slate-900 dark:shadow-slate-900/50">
           <CardContent className="p-4">
-            <p className="text-sm font-medium text-slate-700 mb-3">
+            <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">
               Quick Actions
             </p>
             <div className="grid grid-cols-3 gap-2">
@@ -203,6 +203,7 @@ function GameScreen(game: GameWithPlayers) {
                 variant="outline"
                 size="sm"
                 onClick={() => setAmount("200")}
+                className="dark:border-slate-700 dark:text-slate-300"
               >
                 ₩200
               </Button>
@@ -210,6 +211,7 @@ function GameScreen(game: GameWithPlayers) {
                 variant="outline"
                 size="sm"
                 onClick={() => setAmount("100")}
+                className="dark:border-slate-700 dark:text-slate-300"
               >
                 ₩100
               </Button>
@@ -217,6 +219,7 @@ function GameScreen(game: GameWithPlayers) {
                 variant="outline"
                 size="sm"
                 onClick={() => setAmount("50")}
+                className="dark:border-slate-700 dark:text-slate-300"
               >
                 ₩50
               </Button>

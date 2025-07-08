@@ -2,6 +2,7 @@ import type React from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "../globals.css";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,16 +28,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <head>
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="MonopolyPay" />
-        <link rel="apple-touch-icon" href="/icon-192x192.png" />
-      </head>
-      <body className={inter.className}>
-        <div className="max-w-sm mx-auto min-h-screen bg-white">{children}</div>
-      </body>
-    </html>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+    >
+      <html lang="en" suppressHydrationWarning>
+        <head>
+          <meta name="apple-mobile-web-app-capable" content="yes" />
+          <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+          <meta name="apple-mobile-web-app-title" content="MonopolyPay" />
+          <link rel="apple-touch-icon" href="/icon-192x192.png" />
+        </head>
+        <body className={`${inter.className} dark:bg-slate-950`}>
+          <div className="max-w-sm mx-auto min-h-screen bg-white dark:bg-slate-950">
+            {children}
+          </div>
+        </body>
+      </html>
+    </ThemeProvider>
   );
 }

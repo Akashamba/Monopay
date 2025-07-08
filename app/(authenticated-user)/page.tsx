@@ -50,7 +50,7 @@ export default function HomePage() {
 
   if (isUserLoading) {
     return (
-      <div className="w-full min-h-screen flex justify-center items-center bg-gradient-to-br from-slate-50 to-blue-50">
+      <div className="w-full min-h-screen flex justify-center items-center bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
         <Loader2 className="h-20 w-20 animate-spin text-primary" />
       </div>
     );
@@ -59,14 +59,14 @@ export default function HomePage() {
       router.push("/sign-in");
     } else {
       return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
           {/* Main Content */}
           <div className="p-6 space-y-8">
             <div className="text-center space-y-2">
-              <h1 className="text-2xl font-bold text-slate-900">
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
                 Welcome Back!
               </h1>
-              <p className="text-slate-600">Ready to start a new game?</p>
+              <p className="text-slate-600 dark:text-slate-400">Ready to start a new game?</p>
             </div>
 
             {/* Action Cards */}
@@ -75,21 +75,21 @@ export default function HomePage() {
                 onClick={createGame.isPending ? undefined : handleCreateGame} 
                 className={`cursor-pointer ${createGame.isPending ? 'opacity-70' : ''}`}
               >
-                <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow mb-2">
+                <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow mb-2 dark:bg-slate-900 dark:shadow-slate-900/50">
                   <CardContent className="p-6">
                     <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                      <div className="w-12 h-12 bg-red-100 dark:bg-red-900 rounded-xl flex items-center justify-center">
                         {createGame.isPending ? (
-                          <Loader2 className="w-6 h-6 text-red-600 animate-spin" />
+                          <Loader2 className="w-6 h-6 text-red-600 dark:text-red-400 animate-spin" />
                         ) : (
-                          <Plus className="w-6 h-6 text-red-600" />
+                          <Plus className="w-6 h-6 text-red-600 dark:text-red-400" />
                         )}
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-semibold text-slate-900">
+                        <h3 className="font-semibold text-slate-900 dark:text-white">
                           {createGame.isPending ? "Creating Game..." : "Create Game"}
                         </h3>
-                        <p className="text-sm text-slate-600">
+                        <p className="text-sm text-slate-600 dark:text-slate-400">
                           Start a new Monopoly banking session
                         </p>
                       </div>
@@ -99,17 +99,17 @@ export default function HomePage() {
               </div>
 
               <Link href="/join-game">
-                <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow cursor-pointer">
+                <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow cursor-pointer dark:bg-slate-900 dark:shadow-slate-900/50">
                   <CardContent className="p-6">
                     <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                        <Users className="w-6 h-6 text-blue-600" />
+                      <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-xl flex items-center justify-center">
+                        <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-semibold text-slate-900">
+                        <h3 className="font-semibold text-slate-900 dark:text-white">
                           Join Game
                         </h3>
-                        <p className="text-sm text-slate-600">
+                        <p className="text-sm text-slate-600 dark:text-slate-400">
                           Enter a game code to join
                         </p>
                       </div>
@@ -121,17 +121,17 @@ export default function HomePage() {
 
             {/* Recent Games */}
             <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-slate-900">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
                 Recent Games
               </h2>
-              <Card className="border-0 shadow-sm">
+              <Card className="border-0 shadow-sm dark:bg-slate-900 dark:shadow-slate-900/50">
                 <CardContent className="p-4">
                   <div className="flex justify-between items-center">
                     <div>
-                      <p className="font-medium text-slate-900">
+                      <p className="font-medium text-slate-900 dark:text-white">
                         Family Game Night
                       </p>
-                      <p className="text-sm text-slate-600">
+                      <p className="text-sm text-slate-600 dark:text-slate-400">
                         2 hours ago • 4 players
                       </p>
                     </div>
