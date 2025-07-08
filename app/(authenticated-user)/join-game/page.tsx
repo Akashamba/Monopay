@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/trpc/react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -121,7 +121,7 @@ export default function JoinGamePage() {
                       : "hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-900 dark:text-white"
                   }`}
                   onClick={() => num && handleKeypadClick(num)}
-                  disabled={num === ""}
+                  disabled={num === "" || joinGame.isPending}
                 >
                   {num}
                 </Button>
@@ -133,10 +133,17 @@ export default function JoinGamePage() {
         {/* Join Button */}
         <Button
           className="w-full h-12 bg-red-600 hover:bg-red-700 text-white font-semibold"
-          disabled={gameCode.length !== 6}
+          disabled={gameCode.length !== 6 || joinGame.isPending}
           onClick={handleJoinGame}
         >
-          Join Game
+          {joinGame.isPending ? (
+            <>
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              Joining...
+            </>
+          ) : (
+            "Join Game"
+          )}
         </Button>
       </div>
     </div>
