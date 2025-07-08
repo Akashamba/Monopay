@@ -17,17 +17,132 @@ import {
   ArrowDownLeft,
   Building2,
   Users,
-  Menu,
+  Loader2,
 } from "lucide-react";
 import { useState } from "react";
 import { GameWithPlayers } from "@/server/api/routers/games";
+import { AvatarImage } from "@radix-ui/react-avatar";
+import { authClient } from "@/lib/auth-client";
+import { api } from "@/trpc/react";
 
 function GameScreen(game: GameWithPlayers) {
   const [amount, setAmount] = useState("");
   const [selectedPlayer, setSelectedPlayer] = useState("");
   const [transferType, setTransferType] = useState("player");
+  const user = authClient.useSession().data?.user;
 
-  const currentBalance = 1500;
+  const transferToPlayer = api.games.transfer.useMutation({
+    onSuccess: () => {
+      // Invalidate and refetch games query
+      // utils.games.getUserGames.invalidate().catch((error: Error) => {
+      //   console.error("Failed to invalidate cache:", error);
+      // });
+      console.log("Transfer completed successfully!");
+    },
+    onError: (error) => {
+      console.log(`Failed to transfer: ${error.message}`);
+    },
+  });
+
+  async function handlePlayerTransfer() {
+    try {
+      const result = await transferToPlayer.mutateAsync({
+        gameId: game.id,
+        amount: Number(amount),
+        toPlayerId: selectedPlayer,
+      });
+
+      if (result.success) {
+        setSelectedPlayer("");
+        setAmount("");
+      } else {
+        console.error("Transfer complete but error");
+      }
+    } catch (error) {
+      console.error("Failed to transfer:", error);
+      if (error instanceof Error) {
+        alert(`Failed to transfer: ${error.message}`);
+      } else {
+        alert("Failed to transfer. Please try again.");
+      }
+    }
+  }
+
+  const requestFromBank = api.games.requestFromBank.useMutation({
+    onSuccess: () => {
+      // Invalidate and refetch games query
+      // utils.games.getUserGames.invalidate().catch((error: Error) => {
+      //   console.error("Failed to invalidate cache:", error);
+      // });
+      console.log("Received from bank successfully!");
+    },
+    onError: (error) => {
+      console.log(`Failed to receive from bank: ${error.message}`);
+    },
+  });
+
+  async function handleRequestFromBank() {
+    try {
+      const result = await requestFromBank.mutateAsync({
+        gameId: game.id,
+        amount: Number(amount),
+      });
+
+      if (result.success) {
+        setSelectedPlayer("");
+        setAmount("");
+      } else {
+        console.error("Received from bank but error");
+      }
+    } catch (error) {
+      console.error("Failed to receive from bank:", error);
+      if (error instanceof Error) {
+        alert(`Failed to receive from bank: ${error.message}`);
+      } else {
+        alert("Failed to receive from bank. Please try again.");
+      }
+    }
+  }
+
+  const payToBank = api.games.payToBank.useMutation({
+    onSuccess: () => {
+      // Invalidate and refetch games query
+      // utils.games.getUserGames.invalidate().catch((error: Error) => {
+      //   console.error("Failed to invalidate cache:", error);
+      // });
+      console.log("Paid bank successfully!");
+    },
+    onError: (error) => {
+      console.log(`Failed to pay bank: ${error.message}`);
+    },
+  });
+
+  async function handlePayToBank() {
+    try {
+      const result = await payToBank.mutateAsync({
+        gameId: game.id,
+        amount: Number(amount),
+      });
+
+      if (result.success) {
+        setSelectedPlayer("");
+        setAmount("");
+      } else {
+        console.error("Paid bank but error");
+      }
+    } catch (error) {
+      console.error("Failed to pay bank:", error);
+      if (error instanceof Error) {
+        alert(`Failed to pay bank: ${error.message}`);
+      } else {
+        alert("Failed to pay bank. Please try again.");
+      }
+    }
+  }
+
+  const currentBalance = game.players.find(
+    (player) => player.userId === user?.id
+  )?.balance;
 
   const { players } = game;
 
@@ -35,7 +150,7 @@ function GameScreen(game: GameWithPlayers) {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
       {/* Header */}
       <div className="flex justify-between items-center p-4 bg-white dark:bg-slate-950 shadow-sm">
-        <div className="flex items-center space-x-3">
+        {/* <div className="flex items-center space-x-3">
           <div className="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center">
             <span className="text-white text-sm font-bold">M</span>
           </div>
@@ -45,7 +160,7 @@ function GameScreen(game: GameWithPlayers) {
         </div>
         <Button variant="ghost" size="sm">
           <Menu className="w-5 h-5" />
-        </Button>
+        </Button> */}
       </div>
 
       {/* Balance Display */}
@@ -53,7 +168,7 @@ function GameScreen(game: GameWithPlayers) {
         <CardContent className="p-6 text-center">
           <p className="text-red-100 text-sm mb-1">Your Balance</p>
           <p className="text-white text-4xl font-bold">
-            ₩{currentBalance.toLocaleString()}
+            ₩{currentBalance?.toLocaleString()}
           </p>
           <p className="text-red-100 text-sm mt-2">Monopoly Dollars</p>
         </CardContent>
@@ -93,9 +208,14 @@ function GameScreen(game: GameWithPlayers) {
                     </SelectTrigger>
                     <SelectContent>
                       {players.map((player) => (
-                        <SelectItem key={player.id} value={player.id}>
+                        <SelectItem
+                          key={player.id}
+                          value={player.id}
+                          disabled={player.userId === user?.id}
+                        >
                           <div className="flex items-center space-x-2">
                             <Avatar className="w-6 h-6">
+                              <AvatarImage src={player.user.image ?? ""} />
                               <AvatarFallback className="text-xs bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400">
                                 {player.user.name
                                   .split(" ")
@@ -103,10 +223,26 @@ function GameScreen(game: GameWithPlayers) {
                                   .join("")}
                               </AvatarFallback>
                             </Avatar>
-                            <span>{player.user.name}</span>
-                            <Badge variant="outline" className="ml-auto dark:border-slate-700 dark:text-slate-300">
+                            <span>
+                              {player.user.name.length > 11
+                                ? `${player.user.name.slice(0, 11)}...`
+                                : player.user.name}
+                            </span>
+                            <Badge
+                              variant="outline"
+                              className="ml-auto dark:border-slate-700 dark:text-slate-300"
+                            >
                               ₩{player.balance.toLocaleString()}
                             </Badge>
+
+                            {player.userId === user?.id && (
+                              <Badge
+                                variant="outline"
+                                className="ml-auto dark:border-slate-700 dark:text-slate-300"
+                              >
+                                You
+                              </Badge>
+                            )}
                           </div>
                         </SelectItem>
                       ))}
@@ -127,22 +263,34 @@ function GameScreen(game: GameWithPlayers) {
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3">
                   <Button
                     className="h-12 bg-green-600 hover:bg-green-700 text-white"
-                    disabled={!selectedPlayer || !amount}
+                    disabled={
+                      !selectedPlayer || !amount || transferToPlayer.isPending
+                    }
+                    onClick={handlePlayerTransfer}
                   >
-                    <ArrowUpRight className="w-4 h-4 mr-2" />
-                    Send
+                    {transferToPlayer.isPending ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        <ArrowUpRight className="w-4 h-4 mr-2" />
+                        Send
+                      </>
+                    )}
                   </Button>
-                  <Button
+                  {/* <Button
                     variant="outline"
                     className="h-12 border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950 bg-transparent"
                     disabled={!selectedPlayer || !amount}
                   >
                     <ArrowDownLeft className="w-4 h-4 mr-2" />
                     Request
-                  </Button>
+                  </Button> */}
                 </div>
               </CardContent>
             </Card>
@@ -153,8 +301,12 @@ function GameScreen(game: GameWithPlayers) {
               <CardContent className="p-6 space-y-4">
                 <div className="text-center p-4 bg-slate-50 dark:bg-slate-800 rounded-lg">
                   <Building2 className="w-8 h-8 text-slate-600 dark:text-slate-400 mx-auto mb-2" />
-                  <p className="font-medium text-slate-900 dark:text-white">Monopoly Bank</p>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">Unlimited funds</p>
+                  <p className="font-medium text-slate-900 dark:text-white">
+                    Monopoly Bank
+                  </p>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                    Unlimited funds
+                  </p>
                 </div>
 
                 <div>
@@ -173,18 +325,38 @@ function GameScreen(game: GameWithPlayers) {
                 <div className="grid grid-cols-2 gap-3">
                   <Button
                     className="h-12 bg-green-600 hover:bg-green-700 text-white"
-                    disabled={!amount}
+                    disabled={!amount || requestFromBank.isPending}
+                    onClick={handleRequestFromBank}
                   >
-                    <ArrowDownLeft className="w-4 h-4 mr-2" />
-                    Collect
+                    {requestFromBank.isPending ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        <ArrowDownLeft className="w-4 h-4 mr-2" />
+                        Collect
+                      </>
+                    )}
                   </Button>
                   <Button
                     variant="outline"
                     className="h-12 border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950 bg-transparent"
-                    disabled={!amount}
+                    disabled={!amount || payToBank.isPending}
+                    onClick={handlePayToBank}
                   >
-                    <ArrowUpRight className="w-4 h-4 mr-2" />
-                    Pay
+                    {payToBank.isPending ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        <ArrowUpRight className="w-4 h-4 mr-2" />
+                        Pay
+                      </>
+                    )}
                   </Button>
                 </div>
               </CardContent>

@@ -14,16 +14,17 @@ export default function HomePage() {
   const router = useRouter();
   const utils = api.useUtils();
 
-  const { data: userGames, isLoading: isGamesLoading } = api.games.getUserGames.useQuery(undefined, {
-    enabled: !!user,
-  });
+  const { data: userGames, isLoading: isGamesLoading } =
+    api.games.getUserGames.useQuery(undefined, {
+      enabled: !!user,
+    });
 
   const createGame = api.games.create.useMutation({
     onSuccess: () => {
       // Invalidate and refetch games query
-      utils.games.getUserGames.invalidate().catch((error: Error) => {
-        console.error("Failed to invalidate cache:", error);
-      });
+      // utils.games.getUserGames.invalidate().catch((error: Error) => {
+      //   console.error("Failed to invalidate cache:", error);
+      // });
       console.log("Game created successfully!");
     },
     onError: (error) => {
@@ -141,7 +142,10 @@ export default function HomePage() {
               ) : userGames && userGames.length > 0 ? (
                 <div className="space-y-3">
                   {userGames.map((game) => (
-                    <Card key={game.id} className="border-0 shadow-sm dark:bg-slate-900 dark:shadow-slate-900/50">
+                    <Card
+                      key={game.id}
+                      className="border-0 shadow-sm dark:bg-slate-900 dark:shadow-slate-900/50"
+                    >
                       <CardContent className="p-4">
                         <div className="flex justify-between items-center">
                           <div>
@@ -149,7 +153,8 @@ export default function HomePage() {
                               Game #{game.code}
                             </p>
                             <p className="text-sm text-slate-600 dark:text-slate-400">
-                              {new Date(game.createdAt).toLocaleDateString()} • {game.players.length} players • {game.status}
+                              {new Date(game.createdAt).toLocaleDateString()} •{" "}
+                              {game.players.length} players • {game.status}
                             </p>
                           </div>
                           <Button
