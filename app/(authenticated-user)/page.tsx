@@ -34,7 +34,7 @@ export default function HomePage() {
       });
 
       if (result.gameId) {
-        router.push(`/waiting-room/${result.gameId}`);
+        router.push(`/game/${result.gameId}`);
       } else {
         console.error("Game created but no gameId returned");
       }
@@ -71,8 +71,8 @@ export default function HomePage() {
 
             {/* Action Cards */}
             <div className="space-y-4">
-              <Button onClick={handleCreateGame} variant="ghost">
-                <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow cursor-pointer">
+              <div onClick={handleCreateGame} className="cursor-pointer">
+                <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow mb-2">
                   <CardContent className="p-6">
                     <div className="flex items-center space-x-4">
                       <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
@@ -89,7 +89,7 @@ export default function HomePage() {
                     </div>
                   </CardContent>
                 </Card>
-              </Button>
+              </div>
 
               <Link href="/join-game">
                 <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow cursor-pointer">
