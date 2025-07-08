@@ -445,9 +445,8 @@ function GameScreen(game: GameWithPlayers) {
                     {transactionHistory.map((tx) => {
                       const isReceiving = tx.toPlayerId === players.find(p => p.userId === user?.id)?.id;
                       const isBank = !tx.fromPlayerId || !tx.toPlayerId;
-                      const otherPlayerData = isReceiving
-                        ? players.find(p => p.id === tx.fromPlayerId)
-                        : players.find(p => p.id === tx.toPlayerId);
+                      const fromPlayer = tx.fromPlayerId ? players.find(p => p.id === tx.fromPlayerId) : null;
+                      const toPlayer = tx.toPlayerId ? players.find(p => p.id === tx.toPlayerId) : null;
 
                       return (
                         <div
@@ -455,48 +454,49 @@ function GameScreen(game: GameWithPlayers) {
                           className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-lg"
                         >
                           <div className="flex items-center space-x-3">
-                            {isBank ? (
-                              <div className="relative">
-                                <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+                            <div className="flex items-center -space-x-3">
+                              {/* From participant */}
+                              {isBank && !tx.fromPlayerId ? (
+                                <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center relative">
                                   <Building2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                                 </div>
-                                <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
-                                  {tx.type === 'bank_request' ? (
-                                    <ArrowDownLeft className="w-3 h-3 text-green-600 dark:text-green-400" />
-                                  ) : (
-                                    <ArrowUpRight className="w-3 h-3 text-red-600 dark:text-red-400" />
-                                  )}
-                                </div>
-                              </div>
-                            ) : (
-                              <div className="relative">
-                                <Avatar className="w-8 h-8">
-                                  <AvatarImage src={otherPlayerData?.user.image ?? ""} />
+                              ) : (
+                                <Avatar className="w-8 h-8 border-2 border-slate-50 dark:border-slate-800">
+                                  <AvatarImage src={fromPlayer?.user.image ?? ""} />
                                   <AvatarFallback className="bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 text-xs">
-                                    {otherPlayerData?.user.name
+                                    {fromPlayer?.user.name
                                       .split(" ")
                                       .map((n) => n[0])
                                       .join("")}
                                   </AvatarFallback>
                                 </Avatar>
-                                <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
-                                  {isReceiving ? (
-                                    <ArrowDownLeft className="w-3 h-3 text-green-600 dark:text-green-400" />
-                                  ) : (
-                                    <ArrowUpRight className="w-3 h-3 text-red-600 dark:text-red-400" />
-                                  )}
+                              )}
+
+                              {/* To participant */}
+                              {isBank && !tx.toPlayerId ? (
+                                <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center relative border-2 border-slate-50 dark:border-slate-800">
+                                  <Building2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                                 </div>
-                              </div>
-                            )}
+                              ) : (
+                                <Avatar className="w-8 h-8 border-2 border-slate-50 dark:border-slate-800">
+                                  <AvatarImage src={toPlayer?.user.image ?? ""} />
+                                  <AvatarFallback className="bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 text-xs">
+                                    {toPlayer?.user.name
+                                      .split(" ")
+                                      .map((n) => n[0])
+                                      .join("")}
+                                  </AvatarFallback>
+                                </Avatar>
+                              )}
+                            </div>
+
                             <div>
                               <p className="text-sm font-medium text-slate-900 dark:text-white">
                                 {isBank
                                   ? tx.type === 'bank_request'
-                                    ? 'Collected from Bank'
-                                    : 'Paid to Bank'
-                                  : isReceiving
-                                  ? `Received from ${otherPlayerData?.user.name}`
-                                  : `Sent to ${otherPlayerData?.user.name}`}
+                                    ? 'Bank → ' + toPlayer?.user.name
+                                    : fromPlayer?.user.name + ' → Bank'
+                                  : fromPlayer?.user.name + ' → ' + toPlayer?.user.name}
                               </p>
                               <p className="text-xs text-slate-500 dark:text-slate-400">
                                 {new Date(tx.createdAt).toLocaleDateString('en-US', {
