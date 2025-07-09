@@ -5,6 +5,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import { TRPCReactProvider } from "@/trpc/react";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -51,6 +52,7 @@ export default function RootLayout({
             <div className="max-w-sm mx-auto min-h-screen bg-white dark:bg-slate-950">
               {children}
             </div>
+            <Toaster />
           </body>
         </html>
       </ThemeProvider>

@@ -7,10 +7,12 @@ import { Copy, Crown, Loader2, Users } from "lucide-react";
 import { GameWithPlayers } from "@/server/api/routers/games";
 import { authClient } from "@/lib/auth-client";
 import { api } from "@/trpc/react";
+import { useToast } from "@/hooks/use-toast";
 
 function WaitingRoom(game: GameWithPlayers) {
   const { players } = game;
   const user = authClient.useSession().data?.user;
+  const { toast } = useToast();
 
   const currentUserIsCreator = game.players.find(
     (player) => player.isCreator && player.userId === user?.id
@@ -48,6 +50,25 @@ function WaitingRoom(game: GameWithPlayers) {
     }
   }
 
+  const handleCopyGameCode = () => {
+    navigator.clipboard.writeText(game.code).then(() => {
+      toast({
+        title: "Copied!",
+        description: "Game code copied to clipboard",
+      });
+    });
+  };
+
+  const handleCopyGameUrl = () => {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+      toast({
+        title: "Copied!",
+        description: "Game URL copied to clipboard",
+      });
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
       {/* Header */}
@@ -76,14 +97,30 @@ function WaitingRoom(game: GameWithPlayers) {
                   <span className="text-3xl font-bold text-red-600 dark:text-red-400 tracking-wider">
                     {game?.code}
                   </span>
-                  {/* <Button variant="ghost" size="sm">
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={handleCopyGameCode}
+                    className="hover:bg-slate-100 dark:hover:bg-slate-800"
+                  >
                     <Copy className="w-4 h-4" />
-                  </Button> */}
+                  </Button>
                 </div>
               </div>
-              <p className="text-sm text-slate-500 dark:text-slate-400">
-                Share this code with other players
-              </p>
+              <div className="flex flex-col items-center gap-2">
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  Share this code or the game URL with other players
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleCopyGameUrl}
+                  className="flex items-center gap-2"
+                >
+                  <Copy className="w-4 h-4" />
+                  Copy Game URL
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
