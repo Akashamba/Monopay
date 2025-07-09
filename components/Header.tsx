@@ -8,6 +8,7 @@ import { Loader2, Moon, Sun, LogOut, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
+import ProfilePictureSkeleton from "./ProfilePictureSkeleton";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -42,7 +43,7 @@ function Header() {
             <span className="sr-only">Toggle theme</span>
           </Button>
           {isUserLoading ? (
-            <Loader2 className="h-6 w-6 animate-spin text-primary" />
+            <ProfilePictureSkeleton size={40} />
           ) : user ? (
             <Button
               variant="ghost"
