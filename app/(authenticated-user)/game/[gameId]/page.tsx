@@ -83,7 +83,7 @@ export default function GamePage() {
           </div>
         );
       } else if (game.status === "ongoing") {
-        return <GameScreen {...game} />;
+        router.push("/404");
       }
     }
   }
