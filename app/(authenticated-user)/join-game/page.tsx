@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/trpc/react";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, Clipboard, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -19,6 +19,17 @@ export default function JoinGamePage() {
     }
   };
 
+  const handlePaste = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      // Filter only numbers and take first 6
+      const numbers = text.replace(/[^0-9]/g, "").slice(0, 6);
+      setGameCode(numbers);
+    } catch (error) {
+      console.error("Failed to paste:", error);
+    }
+  };
+
   const keypadNumbers = [
     ["1", "2", "3"],
     ["4", "5", "6"],
@@ -30,10 +41,6 @@ export default function JoinGamePage() {
 
   const joinGame = api.games.join.useMutation({
     onSuccess: () => {
-      // Invalidate and refetch articles query
-      // utils.games.getGame.invalidate().catch((error) => {
-      //   console.error("Failed to invalidate cache:", error);
-      // });
       console.log("Game joined successfully!");
     },
     onError: (error) => {
@@ -88,19 +95,30 @@ export default function JoinGamePage() {
         {/* Game Code Display */}
         <Card className="border-0 shadow-lg dark:bg-slate-900 dark:shadow-slate-900/50">
           <CardContent className="p-6">
-            <div className="flex justify-center space-x-2">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div
-                  key={i}
-                  className={`w-12 h-12 border-2 rounded-lg flex items-center justify-center text-xl font-bold ${
-                    gameCode[i]
-                      ? "border-red-500 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400"
-                      : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-400 dark:text-slate-500"
-                  }`}
-                >
-                  {gameCode[i] || ""}
-                </div>
-              ))}
+            <div className="flex flex-col items-center space-y-4">
+              <div className="flex justify-center space-x-2">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className={`w-11 h-11 border-2 rounded-lg flex items-center justify-center text-xl font-bold ${
+                      gameCode[i]
+                        ? "border-red-500 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400"
+                        : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-400 dark:text-slate-500"
+                    }`}
+                  >
+                    {gameCode[i] || ""}
+                  </div>
+                ))}
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handlePaste}
+                className="flex items-center space-x-2"
+              >
+                <Clipboard className="w-4 h-4" />
+                <span>Paste Code</span>
+              </Button>
             </div>
           </CardContent>
         </Card>
