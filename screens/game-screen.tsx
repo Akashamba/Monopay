@@ -509,12 +509,18 @@ function GameScreen(game: GameWithPlayers) {
                               </p>
                             </div>
                           </div>
-                          <div className={`text-sm font-medium ${
-                            isReceiving || tx.type === 'bank_request'
+                          <div className={`text-sm font-medium min-w-[4rem] text-right ${
+                            tx.fromPlayerId === players.find(p => p.userId === user?.id)?.id
+                              ? 'text-red-600 dark:text-red-400'
+                              : tx.toPlayerId === players.find(p => p.userId === user?.id)?.id
                               ? 'text-green-600 dark:text-green-400'
-                              : 'text-red-600 dark:text-red-400'
+                              : 'text-slate-600 dark:text-slate-400'
                           }`}>
-                            {isReceiving || tx.type === 'bank_request' ? '+' : '-'}₩{Number(tx.amount).toLocaleString()}
+                            {tx.fromPlayerId === players.find(p => p.userId === user?.id)?.id 
+                              ? '-' 
+                              : tx.toPlayerId === players.find(p => p.userId === user?.id)?.id
+                              ? '+' 
+                              : ''}₩{Number(tx.amount).toLocaleString()}
                           </div>
                         </div>
                       );
