@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { authClient } from "@/lib/auth-client";
 import { api } from "@/trpc/react";
 import { Loader2, Plus, Users } from "lucide-react";
@@ -64,9 +65,9 @@ export default function HomePage() {
       router.push("/sign-in");
     } else {
       return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
+        <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
           {/* Main Content */}
-          <div className="p-6 space-y-8">
+          <div className="flex-1 p-6 space-y-8">
             <div className="text-center space-y-2">
               <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
                 Welcome Back!
@@ -132,16 +133,25 @@ export default function HomePage() {
 
             {/* Recent Games */}
             <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-                Recent Games
-              </h2>
+              <div className="flex justify-between items-center">
+                <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+                  Recent Games
+                </h2>
+                {userGames && userGames.length > 3 && (
+                  <Link href="/recent-games">
+                    <Button variant="ghost" size="sm">
+                      View All
+                    </Button>
+                  </Link>
+                )}
+              </div>
               {isGamesLoading ? (
                 <div className="flex justify-center p-8">
                   <Loader2 className="h-8 w-8 animate-spin text-primary" />
                 </div>
               ) : userGames && userGames.length > 0 ? (
                 <div className="space-y-3">
-                  {userGames.map((game) => (
+                  {userGames.slice(0, 3).map((game) => (
                     <Card
                       key={game.id}
                       className="border-0 shadow-sm dark:bg-slate-900 dark:shadow-slate-900/50"
@@ -180,6 +190,27 @@ export default function HomePage() {
               )}
             </div>
           </div>
+
+          {/* Footer with Disclaimer */}
+          <footer className="mt-auto py-4 px-6 border-t bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm">
+            <div className="max-w-screen-xl mx-auto text-center">
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="link" className="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+                    Disclaimer
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Legal Disclaimer</DialogTitle>
+                    <DialogDescription className="text-left pt-4">
+                      This app is an unofficial companion tool intended to be used while playing the board game Monopoly. It is not affiliated with, authorized, or endorsed by Hasbro, Inc. "Monopoly" is a registered trademark of Hasbro, Inc.
+                    </DialogDescription>
+                  </DialogHeader>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </footer>
         </div>
       );
     }

@@ -60,6 +60,9 @@ export default function LoginPage() {
         <p className="text-center text-sm text-slate-500 dark:text-slate-400">
           Secure banking for your Monopoly games
         </p>
+        <p className="text-center text-xs text-slate-400 dark:text-slate-500">
+          Not affiliated with Hasbro. Monopoly is a trademark of Hasbro, Inc.
+        </p>
       </div>
     </div>
   );
