@@ -48,7 +48,7 @@ export default function GamePage() {
       </div>
     );
   } else if (game) {
-    if (game.players.find(p => p.userId === user?.id)) {
+    if (game.players.find((p) => p.userId === user?.id)) {
       if (game.status === "waiting") {
         return <WaitingRoom {...game} />;
       } else if (game.status === "ongoing") {
@@ -56,13 +56,15 @@ export default function GamePage() {
       }
     } else {
       if (game.status === "waiting") {
-        const creator = game.players.find(p => p.isCreator)?.user;
+        const creator = game.players.find((p) => p.isCreator)?.user;
         const otherPlayersCount = game.players.length - 1;
-        
+
         return (
           <div className="w-full min-h-screen flex flex-col gap-4 justify-center items-center bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950">
             <p className="text-xl text-center px-4">
-              {`Do you want to join this game with ${creator?.name}${otherPlayersCount > 0 ? (" and {otherPlayersCount} others") : ""}?`}
+              {`Do you want to join this game with ${creator?.name}${
+                otherPlayersCount > 0 ? " and {otherPlayersCount} others" : ""
+              }?`}
             </p>
             <button
               onClick={() => {
