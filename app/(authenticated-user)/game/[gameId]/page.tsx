@@ -118,7 +118,7 @@ export default function GamePage() {
           <div className="w-full min-h-screen flex flex-col gap-4 justify-center items-center bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-950">
             <p className="text-xl text-center px-4">
               {`Do you want to join this game with ${creator?.name}${
-                otherPlayersCount > 0 ? " and {otherPlayersCount} others" : ""
+                otherPlayersCount > 0 ? ` and ${otherPlayersCount} others` : ""
               }?`}
             </p>
             <button
