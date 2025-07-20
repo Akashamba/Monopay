@@ -11,6 +11,10 @@ import { useRouter } from "next/navigation";
 import Pusher from "pusher-js";
 import { useEffect } from "react";
 
+const pusher = new Pusher("9c2f00b66346bb146d20", {
+  cluster: "us2",
+});
+
 // Fetch game based on Id
 // Based on status, render waiting room or bank screen
 export default function GamePage() {
@@ -34,10 +38,6 @@ export default function GamePage() {
   const router = useRouter();
 
   useEffect(() => {
-    console.log("Game ID: ", gameId);
-    const pusher = new Pusher("9c2f00b66346bb146d20", {
-      cluster: "us2",
-    });
     const channel = pusher.subscribe(gameId);
 
     const handleNewPusherEvent = function (data: any) {
