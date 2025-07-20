@@ -17,10 +17,6 @@ export default function GamePage() {
   const params = useParams();
   const gameId = params?.gameId as string;
 
-  const pusher = new Pusher("9c2f00b66346bb146d20", {
-    cluster: "us2",
-  });
-
   const {
     data: game,
     isLoading: isGameLoading,
@@ -38,14 +34,25 @@ export default function GamePage() {
   const router = useRouter();
 
   useEffect(() => {
+    const pusher = new Pusher("9c2f00b66346bb146d20", {
+      cluster: "us2",
+    });
     const channel = pusher.subscribe(gameId);
-    channel.bind("refetch-game", function (data: any) {
+
+    const handleNewPusherEvent = function (data: any) {
       console.log("NEW EVENT");
       if (data.success) {
         refetchGame();
         refetchTransactionHistory();
       }
-    });
+    };
+
+    channel.bind("refetch-game", handleNewPusherEvent);
+
+    return () => {
+      channel.unbind("refetch-game", handleNewPusherEvent);
+      pusher.unsubscribe(gameId);
+    };
   }, []);
 
   const user = authClient.useSession().data?.user;
