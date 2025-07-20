@@ -34,6 +34,7 @@ export default function GamePage() {
   const router = useRouter();
 
   useEffect(() => {
+    console.log("Game ID: ", gameId);
     const pusher = new Pusher("9c2f00b66346bb146d20", {
       cluster: "us2",
     });
