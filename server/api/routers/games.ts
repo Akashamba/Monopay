@@ -306,6 +306,7 @@ export const gameRouter = createTRPCRouter({
       //   },
       // });
 
+      console.log("TRIGGERING PUSHER EVENT");
       ctx.pusher.trigger(input.gameId, "refetch-game", {
         success: true,
       });
