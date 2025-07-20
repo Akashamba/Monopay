@@ -148,7 +148,7 @@ export const gameRouter = createTRPCRouter({
         isCreator: false,
       });
 
-      ctx.pusher.trigger(game.id, "refetch-game", {
+      await ctx.pusher.trigger(game.id, "refetch-game", {
         success: true,
       });
       return { gameId: game.id, alreadyJoined: false };
@@ -205,7 +205,7 @@ export const gameRouter = createTRPCRouter({
         .set({ status: "ongoing", updatedAt: new Date() })
         .where(eq(games.id, input.gameId));
 
-      ctx.pusher.trigger(game.id, "refetch-game", {
+      await ctx.pusher.trigger(game.id, "refetch-game", {
         success: true,
       });
       return { success: true };
@@ -307,7 +307,7 @@ export const gameRouter = createTRPCRouter({
       // });
 
       console.log("TRIGGERING PUSHER EVENT");
-      ctx.pusher.trigger(input.gameId, "new-transaction", {
+      await ctx.pusher.trigger(input.gameId, "new-transaction", {
         success: true,
         transactionId: transaction.id,
         transaction: transaction,
@@ -361,7 +361,7 @@ export const gameRouter = createTRPCRouter({
         .returning();
 
       console.log("TRIGGERING PUSHER EVENT");
-      ctx.pusher.trigger(input.gameId, "new-transaction", {
+      await ctx.pusher.trigger(input.gameId, "new-transaction", {
         success: true,
         transactionId: transaction.id,
         transaction: transaction,
@@ -422,7 +422,7 @@ export const gameRouter = createTRPCRouter({
         .returning();
 
       console.log("TRIGGERING PUSHER EVENT");
-      ctx.pusher.trigger(input.gameId, "new-transaction", {
+      await ctx.pusher.trigger(input.gameId, "new-transaction", {
         success: true,
         transactionId: transaction.id,
         transaction: transaction,
