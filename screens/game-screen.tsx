@@ -21,18 +21,28 @@ import {
   ArrowDownUp,
 } from "lucide-react";
 import { useState } from "react";
-import { GameWithPlayers } from "@/server/api/routers/games";
+import {
+  GameWithPlayers,
+  TransactionHistory,
+} from "@/server/api/routers/games";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import { authClient } from "@/lib/auth-client";
 import { api } from "@/trpc/react";
 
-function GameScreen(game: GameWithPlayers) {
+function GameScreen({
+  game,
+  transactionHistory,
+  isTransactionHistoryLoading,
+}: {
+  game: GameWithPlayers;
+  transactionHistory: TransactionHistory | undefined;
+  // transactionHistory: TransactionHistory;
+  isTransactionHistoryLoading: boolean;
+}) {
   const [amount, setAmount] = useState("");
   const [selectedPlayer, setSelectedPlayer] = useState("");
   const [transferType, setTransferType] = useState("player");
   const user = authClient.useSession().data?.user;
-  const { data: transactionHistory, isLoading: isTransactionHistoryLoading   } =
-    api.games.getTransactions.useQuery({ gameId: game.id });
 
   const transferToPlayer = api.games.transfer.useMutation({
     onSuccess: () => {
@@ -193,7 +203,10 @@ function GameScreen(game: GameWithPlayers) {
               <Building2 className="w-4 h-4" />
               <span>Bank</span>
             </TabsTrigger>
-            <TabsTrigger value="history" className="flex items-center space-x-2">
+            <TabsTrigger
+              value="history"
+              className="flex items-center space-x-2"
+            >
               <ArrowDownUp className="w-4 h-4" />
               {/* <ArrowUpRight className="w-4 h-4 -ml-2" /> */}
               <span>History</span>
@@ -443,10 +456,16 @@ function GameScreen(game: GameWithPlayers) {
                 ) : transactionHistory && transactionHistory.length > 0 ? (
                   <div className="space-y-3">
                     {transactionHistory.map((tx) => {
-                      const isReceiving = tx.toPlayerId === players.find(p => p.userId === user?.id)?.id;
+                      const isReceiving =
+                        tx.toPlayerId ===
+                        players.find((p) => p.userId === user?.id)?.id;
                       const isBank = !tx.fromPlayerId || !tx.toPlayerId;
-                      const fromPlayer = tx.fromPlayerId ? players.find(p => p.id === tx.fromPlayerId) : null;
-                      const toPlayer = tx.toPlayerId ? players.find(p => p.id === tx.toPlayerId) : null;
+                      const fromPlayer = tx.fromPlayerId
+                        ? players.find((p) => p.id === tx.fromPlayerId)
+                        : null;
+                      const toPlayer = tx.toPlayerId
+                        ? players.find((p) => p.id === tx.toPlayerId)
+                        : null;
 
                       return (
                         <div
@@ -462,7 +481,9 @@ function GameScreen(game: GameWithPlayers) {
                                 </div>
                               ) : (
                                 <Avatar className="w-8 h-8 border-2 border-slate-50 dark:border-slate-800">
-                                  <AvatarImage src={fromPlayer?.user.image ?? ""} />
+                                  <AvatarImage
+                                    src={fromPlayer?.user.image ?? ""}
+                                  />
                                   <AvatarFallback className="bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 text-xs">
                                     {fromPlayer?.user.name
                                       .split(" ")
@@ -479,7 +500,9 @@ function GameScreen(game: GameWithPlayers) {
                                 </div>
                               ) : (
                                 <Avatar className="w-8 h-8 border-2 border-slate-50 dark:border-slate-800">
-                                  <AvatarImage src={toPlayer?.user.image ?? ""} />
+                                  <AvatarImage
+                                    src={toPlayer?.user.image ?? ""}
+                                  />
                                   <AvatarFallback className="bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 text-xs">
                                     {toPlayer?.user.name
                                       .split(" ")
@@ -493,34 +516,46 @@ function GameScreen(game: GameWithPlayers) {
                             <div>
                               <p className="text-sm font-medium text-slate-900 dark:text-white">
                                 {isBank
-                                  ? tx.type === 'bank_request'
-                                    ? 'Bank → ' + toPlayer?.user.name
-                                    : fromPlayer?.user.name + ' → Bank'
-                                  : fromPlayer?.user.name + ' → ' + toPlayer?.user.name}
+                                  ? tx.type === "bank_request"
+                                    ? "Bank → " + toPlayer?.user.name
+                                    : fromPlayer?.user.name + " → Bank"
+                                  : fromPlayer?.user.name +
+                                    " → " +
+                                    toPlayer?.user.name}
                               </p>
                               <p className="text-xs text-slate-500 dark:text-slate-400">
-                                {new Date(tx.createdAt).toLocaleDateString('en-US', {
-                                  year: 'numeric',
-                                  month: 'long',
-                                  day: 'numeric',
-                                  hour: '2-digit',
-                                  minute: '2-digit',
-                                })}
+                                {new Date(tx.createdAt).toLocaleDateString(
+                                  "en-US",
+                                  {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  }
+                                )}
                               </p>
                             </div>
                           </div>
-                          <div className={`text-sm font-medium min-w-[4rem] text-right ${
-                            tx.fromPlayerId === players.find(p => p.userId === user?.id)?.id
-                              ? 'text-red-600 dark:text-red-400'
-                              : tx.toPlayerId === players.find(p => p.userId === user?.id)?.id
-                              ? 'text-green-600 dark:text-green-400'
-                              : 'text-slate-600 dark:text-slate-400'
-                          }`}>
-                            {tx.fromPlayerId === players.find(p => p.userId === user?.id)?.id 
-                              ? '-' 
-                              : tx.toPlayerId === players.find(p => p.userId === user?.id)?.id
-                              ? '+' 
-                              : ''}₩{Number(tx.amount).toLocaleString()}
+                          <div
+                            className={`text-sm font-medium min-w-[4rem] text-right ${
+                              tx.fromPlayerId ===
+                              players.find((p) => p.userId === user?.id)?.id
+                                ? "text-red-600 dark:text-red-400"
+                                : tx.toPlayerId ===
+                                  players.find((p) => p.userId === user?.id)?.id
+                                ? "text-green-600 dark:text-green-400"
+                                : "text-slate-600 dark:text-slate-400"
+                            }`}
+                          >
+                            {tx.fromPlayerId ===
+                            players.find((p) => p.userId === user?.id)?.id
+                              ? "-"
+                              : tx.toPlayerId ===
+                                players.find((p) => p.userId === user?.id)?.id
+                              ? "+"
+                              : ""}
+                            ₩{Number(tx.amount).toLocaleString()}
                           </div>
                         </div>
                       );

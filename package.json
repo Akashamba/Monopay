@@ -64,6 +64,8 @@
     "next-themes": "latest",
     "pg": "^8.16.3",
     "postgres": "^3.4.7",
+    "pusher": "^5.2.0",
+    "pusher-js": "^8.4.0",
     "react": "^19.1.0",
     "react-day-picker": "latest",
     "react-dom": "^19.1.0",

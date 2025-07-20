@@ -300,6 +300,9 @@ export const gameRouter = createTRPCRouter({
       //   },
       // });
 
+      ctx.pusher.trigger(input.gameId, "refetch-game", {
+        success: true,
+      });
       return { success: true };
     }),
 
@@ -345,6 +348,9 @@ export const gameRouter = createTRPCRouter({
         description: input.description || `Bank request by ${ctx.user.name}`,
       });
 
+      ctx.pusher.trigger(input.gameId, "refetch-game", {
+        success: true,
+      });
       return { success: true };
     }),
 
@@ -397,6 +403,9 @@ export const gameRouter = createTRPCRouter({
         description: input.description || `Bank payment by ${ctx.user.name}`,
       });
 
+      ctx.pusher.trigger(input.gameId, "refetch-game", {
+        success: true,
+      });
       return { success: true };
     }),
 
@@ -466,3 +475,6 @@ export const gameRouter = createTRPCRouter({
 });
 
 export type GameWithPlayers = Awaited<ReturnType<typeof gameRouter.getGame>>;
+export type TransactionHistory = Awaited<
+  ReturnType<typeof gameRouter.getTransactions>
+>;

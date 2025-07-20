@@ -14,6 +14,8 @@ import { db } from "@/server/db";
 import { authClient } from "@/lib/auth-client";
 import { auth } from "@/lib/auth";
 
+import Pusher from "pusher";
+
 /**
  * 1. CONTEXT
  *
@@ -37,10 +39,19 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
     console.warn("No user found in session");
   }
 
+  const pusher = new Pusher({
+    appId: "2024584",
+    key: "9c2f00b66346bb146d20",
+    secret: "71db0dafab787fda7e5a",
+    cluster: "us2",
+    useTLS: true,
+  });
+
   return {
     db,
     user: session?.user,
     ...opts,
+    pusher,
   };
 };
 
