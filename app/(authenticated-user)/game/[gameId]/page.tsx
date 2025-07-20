@@ -40,6 +40,7 @@ export default function GamePage() {
   useEffect(() => {
     const channel = pusher.subscribe(gameId);
     channel.bind("refetch-game", function (data: any) {
+      console.log("NEW EVENT");
       if (data.success) {
         refetchGame();
         refetchTransactionHistory();
