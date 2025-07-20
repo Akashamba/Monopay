@@ -307,8 +307,10 @@ export const gameRouter = createTRPCRouter({
       // });
 
       console.log("TRIGGERING PUSHER EVENT");
-      ctx.pusher.trigger(input.gameId, "refetch-game", {
+      ctx.pusher.trigger(input.gameId, "new-transaction", {
         success: true,
+        transactionId: transaction.id,
+        transaction: transaction,
       });
       return { success: true };
     }),
@@ -346,17 +348,23 @@ export const gameRouter = createTRPCRouter({
         .where(eq(players.id, player.id));
 
       // Record transaction
-      await ctx.db.insert(transactions).values({
-        gameId: input.gameId,
-        fromPlayerId: null, // null = from bank
-        toPlayerId: player.id,
-        amount: input.amount.toString(),
-        type: "bank_request",
-        description: input.description || `Bank request by ${ctx.user.name}`,
-      });
+      const [transaction] = await ctx.db
+        .insert(transactions)
+        .values({
+          gameId: input.gameId,
+          fromPlayerId: null, // null = from bank
+          toPlayerId: player.id,
+          amount: input.amount.toString(),
+          type: "bank_request",
+          description: input.description || `Bank request by ${ctx.user.name}`,
+        })
+        .returning();
 
-      ctx.pusher.trigger(input.gameId, "refetch-game", {
+      console.log("TRIGGERING PUSHER EVENT");
+      ctx.pusher.trigger(input.gameId, "new-transaction", {
         success: true,
+        transactionId: transaction.id,
+        transaction: transaction,
       });
       return { success: true };
     }),
@@ -401,17 +409,23 @@ export const gameRouter = createTRPCRouter({
         .where(eq(players.id, player.id));
 
       // Record transaction
-      await ctx.db.insert(transactions).values({
-        gameId: input.gameId,
-        fromPlayerId: player.id,
-        toPlayerId: null, // null = to bank
-        amount: input.amount.toString(),
-        type: "bank_payment",
-        description: input.description || `Bank payment by ${ctx.user.name}`,
-      });
+      const [transaction] = await ctx.db
+        .insert(transactions)
+        .values({
+          gameId: input.gameId,
+          fromPlayerId: player.id,
+          toPlayerId: null, // null = to bank
+          amount: input.amount.toString(),
+          type: "bank_payment",
+          description: input.description || `Bank payment by ${ctx.user.name}`,
+        })
+        .returning();
 
-      ctx.pusher.trigger(input.gameId, "refetch-game", {
+      console.log("TRIGGERING PUSHER EVENT");
+      ctx.pusher.trigger(input.gameId, "new-transaction", {
         success: true,
+        transactionId: transaction.id,
+        transaction: transaction,
       });
       return { success: true };
     }),

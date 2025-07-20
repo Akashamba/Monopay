@@ -3,7 +3,7 @@
 import { authClient } from "@/lib/auth-client";
 import GameScreen from "@/screens/game-screen";
 import WaitingRoom from "@/screens/waiting-room";
-import { Game } from "@/server/db/game-schema";
+import { Game, transactions } from "@/server/db/game-schema";
 import { api } from "@/trpc/react";
 import { Loader2 } from "lucide-react";
 import { useParams } from "next/navigation";
@@ -48,7 +48,22 @@ export default function GamePage() {
       }
     };
 
+    const handleNewPusherTransaction = function (data: any) {
+      console.log("NEW EVENT");
+      if (data.success) {
+        console.log(
+          data.transaction.fromPlayerId,
+          "->",
+          data.transaction.toPlayerId,
+          data.transaction.amount
+        );
+        refetchTransactionHistory();
+        refetchGame();
+      }
+    };
+
     channel.bind("refetch-game", handleNewPusherEvent);
+    channel.bind("new-transaction", handleNewPusherTransaction);
 
     return () => {
       channel.unbind("refetch-game", handleNewPusherEvent);
