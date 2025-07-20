@@ -54,7 +54,7 @@ export default function GamePage() {
       channel.unbind("refetch-game", handleNewPusherEvent);
       pusher.unsubscribe(gameId);
     };
-  }, []);
+  }, [gameId]);
 
   const user = authClient.useSession().data?.user;
 
