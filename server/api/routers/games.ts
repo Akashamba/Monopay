@@ -148,6 +148,9 @@ export const gameRouter = createTRPCRouter({
         isCreator: false,
       });
 
+      ctx.pusher.trigger(game.id, "refetch-game", {
+        success: true,
+      });
       return { gameId: game.id, alreadyJoined: false };
     }),
 
@@ -202,6 +205,9 @@ export const gameRouter = createTRPCRouter({
         .set({ status: "ongoing", updatedAt: new Date() })
         .where(eq(games.id, input.gameId));
 
+      ctx.pusher.trigger(game.id, "refetch-game", {
+        success: true,
+      });
       return { success: true };
     }),
 
