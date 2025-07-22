@@ -178,7 +178,16 @@ export const gameRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND", message: "Game not found" });
       }
 
-      return game;
+      const userId = ctx.user.id;
+
+      const isUserInGame = game.players.some(
+        (player) => player.user.id === userId
+      );
+
+      return {
+        ...game,
+        isUserInGame,
+      };
     }),
 
   // Start game (creator only)
