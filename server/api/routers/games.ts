@@ -293,28 +293,6 @@ export const gameRouter = createTRPCRouter({
         })
         .returning();
 
-      // Emit real-time updates
-      // ctx.io?.to(input.gameId).emit("balance-updated", {
-      //   gameId: input.gameId,
-      //   playerId: fromPlayer.id,
-      //   newBalance: (parseFloat(fromPlayer.balance) - input.amount).toString(),
-      // });
-
-      // ctx.io?.to(input.gameId).emit("balance-updated", {
-      //   gameId: input.gameId,
-      //   playerId: input.toPlayerId,
-      //   newBalance: (parseFloat(toPlayer.balance) + input.amount).toString(),
-      // });
-
-      // ctx.io?.to(input.gameId).emit("transaction-created", {
-      //   gameId: input.gameId,
-      //   transaction: {
-      //     ...transaction,
-      //     fromPlayer: { id: fromPlayer.id, user: { name: ctx.user.name } },
-      //     toPlayer: { id: toPlayer.id, user: { name: toPlayer.userId } }, // You'll need to fetch user name
-      //   },
-      // });
-
       console.log("TRIGGERING PUSHER EVENT");
       await ctx.pusher.trigger(input.gameId, "new-transaction", {
         success: true,
