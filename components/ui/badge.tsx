@@ -35,6 +35,7 @@ const statusClasses: Record<string, string> = {
   ongoing: "bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300",
   completed:
     "bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300",
+  neutral: "",
 };
 
 function Badge({ className, variant, status, ...props }: BadgeProps) {

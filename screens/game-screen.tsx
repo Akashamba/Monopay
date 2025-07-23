@@ -252,6 +252,7 @@ function GameScreen({
                             <Badge
                               variant="outline"
                               className="ml-auto dark:border-slate-700 dark:text-slate-300"
+                              status="neutral"
                             >
                               ${player.balance.toLocaleString()}
                             </Badge>
@@ -260,6 +261,7 @@ function GameScreen({
                               <Badge
                                 variant="outline"
                                 className="ml-auto dark:border-slate-700 dark:text-slate-300"
+                                status="neutral"
                               >
                                 You
                               </Badge>
