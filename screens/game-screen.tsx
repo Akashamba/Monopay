@@ -181,7 +181,7 @@ function GameScreen({
         <CardContent className="p-6 text-center">
           <p className="text-red-100 text-sm mb-1">Your Balance</p>
           <p className="text-white text-4xl font-bold">
-            ₩{currentBalance?.toLocaleString()}
+            ${currentBalance?.toLocaleString()}
           </p>
           <p className="text-red-100 text-sm mt-2">Monopoly Dollars</p>
         </CardContent>
@@ -253,7 +253,7 @@ function GameScreen({
                               variant="outline"
                               className="ml-auto dark:border-slate-700 dark:text-slate-300"
                             >
-                              ₩{player.balance.toLocaleString()}
+                              ${player.balance.toLocaleString()}
                             </Badge>
 
                             {player.userId === user?.id && (
@@ -273,7 +273,7 @@ function GameScreen({
 
                 <div>
                   <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 block">
-                    Amount (₩)
+                    Amount ($)
                   </label>
                   <Input
                     type="number"
@@ -321,7 +321,7 @@ function GameScreen({
                     onClick={() => setAmount("200")}
                     className="dark:border-slate-700 dark:text-slate-300"
                   >
-                    ₩200
+                    $200
                   </Button>
                   <Button
                     variant="outline"
@@ -329,7 +329,7 @@ function GameScreen({
                     onClick={() => setAmount("100")}
                     className="dark:border-slate-700 dark:text-slate-300"
                   >
-                    ₩100
+                    $100
                   </Button>
                   <Button
                     variant="outline"
@@ -337,7 +337,7 @@ function GameScreen({
                     onClick={() => setAmount("50")}
                     className="dark:border-slate-700 dark:text-slate-300"
                   >
-                    ₩50
+                    $50
                   </Button>
                 </div>
               </CardContent>
@@ -359,7 +359,7 @@ function GameScreen({
 
                 <div>
                   <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 block">
-                    Amount (₩)
+                    Amount ($)
                   </label>
                   <Input
                     type="number"
@@ -423,7 +423,7 @@ function GameScreen({
                     onClick={() => setAmount("200")}
                     className="dark:border-slate-700 dark:text-slate-300"
                   >
-                    ₩200
+                    $200
                   </Button>
                   <Button
                     variant="outline"
@@ -431,7 +431,7 @@ function GameScreen({
                     onClick={() => setAmount("100")}
                     className="dark:border-slate-700 dark:text-slate-300"
                   >
-                    ₩100
+                    $100
                   </Button>
                   <Button
                     variant="outline"
@@ -439,7 +439,7 @@ function GameScreen({
                     onClick={() => setAmount("50")}
                     className="dark:border-slate-700 dark:text-slate-300"
                   >
-                    ₩50
+                    $50
                   </Button>
                 </div>
               </CardContent>
@@ -555,7 +555,7 @@ function GameScreen({
                                 players.find((p) => p.userId === user?.id)?.id
                               ? "+"
                               : ""}
-                            ₩{Number(tx.amount).toLocaleString()}
+                            ${Number(tx.amount).toLocaleString()}
                           </div>
                         </div>
                       );

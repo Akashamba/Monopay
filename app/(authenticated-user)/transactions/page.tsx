@@ -1,9 +1,21 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ArrowLeft, ArrowUpRight, ArrowDownLeft, Building2, Filter } from "lucide-react"
-import Link from "next/link"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  ArrowLeft,
+  ArrowUpRight,
+  ArrowDownLeft,
+  Building2,
+  Filter,
+} from "lucide-react";
+import Link from "next/link";
 
 export default function TransactionsPage() {
   const transactions = [
@@ -61,39 +73,39 @@ export default function TransactionsPage() {
       timestamp: "18 minutes ago",
       reason: "Utility payment",
     },
-  ]
+  ];
 
   const getTransactionIcon = (type: string) => {
     switch (type) {
       case "send":
-        return <ArrowUpRight className="w-4 h-4 text-red-500" />
+        return <ArrowUpRight className="w-4 h-4 text-red-500" />;
       case "receive":
-        return <ArrowDownLeft className="w-4 h-4 text-green-500" />
+        return <ArrowDownLeft className="w-4 h-4 text-green-500" />;
       case "bank_collect":
-        return <ArrowDownLeft className="w-4 h-4 text-blue-500" />
+        return <ArrowDownLeft className="w-4 h-4 text-blue-500" />;
       case "bank_pay":
-        return <ArrowUpRight className="w-4 h-4 text-orange-500" />
+        return <ArrowUpRight className="w-4 h-4 text-orange-500" />;
       default:
-        return <ArrowUpRight className="w-4 h-4 text-slate-500" />
+        return <ArrowUpRight className="w-4 h-4 text-slate-500" />;
     }
-  }
+  };
 
   const getTransactionColor = (type: string) => {
     switch (type) {
       case "send":
       case "bank_pay":
-        return "text-red-600"
+        return "text-red-600";
       case "receive":
       case "bank_collect":
-        return "text-green-600"
+        return "text-green-600";
       default:
-        return "text-slate-600"
+        return "text-slate-600";
     }
-  }
+  };
 
   const getTransactionSign = (type: string) => {
-    return type === "send" || type === "bank_pay" ? "-" : "+"
-  }
+    return type === "send" || type === "bank_pay" ? "-" : "+";
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
@@ -105,7 +117,9 @@ export default function TransactionsPage() {
               <ArrowLeft className="w-4 h-4" />
             </Button>
           </Link>
-          <h1 className="text-lg font-semibold text-slate-900">Transaction Log</h1>
+          <h1 className="text-lg font-semibold text-slate-900">
+            Transaction Log
+          </h1>
         </div>
         <Button variant="ghost" size="sm">
           <Filter className="w-4 h-4" />
@@ -146,22 +160,32 @@ export default function TransactionsPage() {
                 <div className="flex-1">
                   <div className="flex items-center space-x-2">
                     <p className="font-medium text-slate-900">
-                      {transaction.from === "You" ? `To ${transaction.to}` : `From ${transaction.from}`}
+                      {transaction.from === "You"
+                        ? `To ${transaction.to}`
+                        : `From ${transaction.from}`}
                     </p>
-                    {transaction.from === "Bank" || transaction.to === "Bank" ? (
+                    {transaction.from === "Bank" ||
+                    transaction.to === "Bank" ? (
                       <Badge variant="outline" className="text-xs">
                         Bank
                       </Badge>
                     ) : null}
                   </div>
                   <p className="text-sm text-slate-600">{transaction.reason}</p>
-                  <p className="text-xs text-slate-500">{transaction.timestamp}</p>
+                  <p className="text-xs text-slate-500">
+                    {transaction.timestamp}
+                  </p>
                 </div>
 
                 {/* Amount */}
                 <div className="text-right">
-                  <p className={`text-lg font-bold ${getTransactionColor(transaction.type)}`}>
-                    {getTransactionSign(transaction.type)}₩{transaction.amount.toLocaleString()}
+                  <p
+                    className={`text-lg font-bold ${getTransactionColor(
+                      transaction.type
+                    )}`}
+                  >
+                    {getTransactionSign(transaction.type)}$
+                    {transaction.amount.toLocaleString()}
                   </p>
                 </div>
               </div>
@@ -176,15 +200,15 @@ export default function TransactionsPage() {
           <div className="grid grid-cols-2 gap-4 text-center">
             <div>
               <p className="text-sm text-slate-600">Total Sent</p>
-              <p className="text-lg font-bold text-red-600">-₩600</p>
+              <p className="text-lg font-bold text-red-600">-$600</p>
             </div>
             <div>
               <p className="text-sm text-slate-600">Total Received</p>
-              <p className="text-lg font-bold text-green-600">+₩400</p>
+              <p className="text-lg font-bold text-green-600">+$400</p>
             </div>
           </div>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
