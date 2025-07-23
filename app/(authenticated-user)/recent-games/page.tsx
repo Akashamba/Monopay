@@ -1,10 +1,11 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { authClient } from "@/lib/auth-client";
 import { api } from "@/trpc/react";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, ChevronRight, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -53,29 +54,41 @@ export default function RecentGamesPage() {
               ) : userGames && userGames.length > 0 ? (
                 <div className="space-y-3">
                   {userGames.map((game) => (
-                    <Card
-                      key={game.id}
-                      className="border-0 shadow-sm dark:bg-slate-900 dark:shadow-slate-900/50"
-                    >
+                    <Card className="border-0 shadow-sm dark:bg-slate-900 dark:shadow-slate-900/50">
                       <CardContent className="p-4">
-                        <div className="flex justify-between items-center">
-                          <div>
-                            <p className="font-medium text-slate-900 dark:text-white">
-                              Game #{game.code}
-                            </p>
-                            <p className="text-sm text-slate-600 dark:text-slate-400">
-                              {new Date(game.createdAt).toLocaleDateString()} •{" "}
-                              {game.players.length} players • {game.status}
-                            </p>
+                        <Link href={`/game/${game.id}`} key={game.id}>
+                          <div className="flex">
+                            <div className="flex justify-between items-center w-[90%]">
+                              {/* Left side: Game info */}
+                              <div>
+                                <p className="font-medium text-slate-900 dark:text-white">
+                                  Game #{game.code}
+                                </p>
+                                <p className="text-sm text-slate-600 dark:text-slate-400">
+                                  {new Date(game.createdAt).toLocaleDateString(
+                                    "en-US",
+                                    {
+                                      year: "numeric",
+                                      month: "short",
+                                      day: "numeric",
+                                    }
+                                  )}{" "}
+                                  • {game.players.length}{" "}
+                                  {game.players.length === 1
+                                    ? "player"
+                                    : "players"}{" "}
+                                </p>
+                              </div>
+                              {/* Right side: Badge */}
+                              <Badge variant="secondary" status={game.status}>
+                                {game.status}
+                              </Badge>
+                            </div>
+                            <div className="flex items-center justify-end w-[10%] text-slate-600 dark:text-slate-400">
+                              <ChevronRight />
+                            </div>
                           </div>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => router.push(`/game/${game.id}`)}
-                          >
-                            View
-                          </Button>
-                        </div>
+                        </Link>
                       </CardContent>
                     </Card>
                   ))}

@@ -97,8 +97,8 @@ function WaitingRoom(game: GameWithPlayers) {
                   <span className="text-3xl font-bold text-red-600 dark:text-red-400 tracking-wider">
                     {game?.code}
                   </span>
-                  <Button 
-                    variant="ghost" 
+                  <Button
+                    variant="ghost"
                     size="sm"
                     onClick={handleCopyGameCode}
                     className="hover:bg-slate-100 dark:hover:bg-slate-800"
@@ -166,10 +166,7 @@ function WaitingRoom(game: GameWithPlayers) {
                         </div>
                       )}
                     </div>
-                    <Badge
-                      variant="secondary"
-                      className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"
-                    >
+                    <Badge variant="secondary" status="completed">
                       Ready
                     </Badge>
                   </div>
