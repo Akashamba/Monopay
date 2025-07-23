@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
 import { Button } from "./ui/button";
-import { Loader2, Moon, Sun, LogOut, Menu, X } from "lucide-react";
+import { Loader2, Moon, Sun, LogOut, Menu, X, Home } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
@@ -29,7 +29,9 @@ function Header() {
           <div className="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center">
             <span className="text-white text-sm font-bold">M</span>
           </div>
-          <span className="font-semibold text-slate-900 dark:text-white">MonopolyPay</span>
+          <span className="font-semibold text-slate-900 dark:text-white">
+            MonopolyPay
+          </span>
         </div>
         <div className="flex items-center space-x-2">
           <Button
@@ -69,6 +71,19 @@ function Header() {
             <div className="px-3 py-2">
               <div className="font-medium dark:text-white">{user.name}</div>
               <div className="text-muted-foreground text-sm">{user.email}</div>
+            </div>
+            <div className="border-b py-1">
+              <Button
+                variant="ghost"
+                className="w-full justify-start px-3"
+                asChild
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                <Link href="/">
+                  <Home className="mr-2 h-4 w-4" />
+                  Home
+                </Link>
+              </Button>
             </div>
             <Button
               variant="ghost"
