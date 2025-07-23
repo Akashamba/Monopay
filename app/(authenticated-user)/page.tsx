@@ -2,18 +2,26 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { authClient } from "@/lib/auth-client";
 import { api } from "@/trpc/react";
 import { Loader2, Plus, Users } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function HomePage() {
   const user = authClient.useSession().data?.user;
   const isUserLoading = authClient.useSession().isPending;
   const router = useRouter();
-  const utils = api.useUtils();
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   const { data: userGames, isLoading: isGamesLoading } =
     api.games.getUserGames.useQuery(undefined, {
@@ -21,12 +29,14 @@ export default function HomePage() {
     });
 
   const createGame = api.games.create.useMutation({
-    onSuccess: () => {
+    onSuccess: (result) => {
       // Invalidate and refetch games query
       // utils.games.getUserGames.invalidate().catch((error: Error) => {
       //   console.error("Failed to invalidate cache:", error);
       // });
       console.log("Game created successfully!");
+      setIsRedirecting(true);
+      router.push(`/game/${result.gameId}`);
     },
     onError: (error) => {
       console.log(`Failed to create game: ${error.message}`);
@@ -35,15 +45,9 @@ export default function HomePage() {
 
   async function handleCreateGame() {
     try {
-      const result = await createGame.mutateAsync({
+      await createGame.mutateAsync({
         startingBalance: 1500, // providing explicit starting balance
       });
-
-      if (result.gameId) {
-        router.push(`/game/${result.gameId}`);
-      } else {
-        console.error("Game created but no gameId returned");
-      }
     } catch (error) {
       console.error("Failed to create game:", error);
       if (error instanceof Error) {
@@ -89,7 +93,7 @@ export default function HomePage() {
                   <CardContent className="p-6">
                     <div className="flex items-center space-x-4">
                       <div className="w-12 h-12 bg-red-100 dark:bg-red-900 rounded-xl flex items-center justify-center">
-                        {createGame.isPending ? (
+                        {createGame.isPending || isRedirecting ? (
                           <Loader2 className="w-6 h-6 text-red-600 dark:text-red-400 animate-spin" />
                         ) : (
                           <Plus className="w-6 h-6 text-red-600 dark:text-red-400" />
@@ -196,7 +200,10 @@ export default function HomePage() {
             <div className="max-w-screen-xl mx-auto text-center">
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button variant="link" className="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+                  <Button
+                    variant="link"
+                    className="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                  >
                     Disclaimer
                   </Button>
                 </DialogTrigger>
@@ -204,7 +211,10 @@ export default function HomePage() {
                   <DialogHeader>
                     <DialogTitle>Legal Disclaimer</DialogTitle>
                     <DialogDescription className="text-left pt-4">
-                      This app is an unofficial companion tool intended to be used while playing the board game Monopoly. It is not affiliated with, authorized, or endorsed by Hasbro, Inc. "Monopoly" is a registered trademark of Hasbro, Inc.
+                      This app is an unofficial companion tool intended to be
+                      used while playing the board game Monopoly. It is not
+                      affiliated with, authorized, or endorsed by Hasbro, Inc.
+                      "Monopoly" is a registered trademark of Hasbro, Inc.
                     </DialogDescription>
                   </DialogHeader>
                 </DialogContent>
