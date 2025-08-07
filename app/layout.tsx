@@ -10,7 +10,7 @@ import { Toaster } from "@/components/ui/toaster";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "MonopolyPay - Digital Banking for Board Games",
+  title: "Monopay - Digital Banking for Board Games",
   description:
     "Modern banking app for Monopoly games with secure transactions and real-time balance tracking",
   manifest: "/manifest.json",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "MonopolyPay",
+    title: "Monopay",
   },
   generator: "v0.dev",
 };
@@ -45,7 +45,7 @@ export default function RootLayout({
               name="apple-mobile-web-app-status-bar-style"
               content="default"
             />
-            <meta name="apple-mobile-web-app-title" content="MonopolyPay" />
+            <meta name="apple-mobile-web-app-title" content="Monopay" />
             <link rel="apple-touch-icon" href="/icon-192x192.png" />
           </head>
           <body className={`${inter.className} dark:bg-slate-950`}>

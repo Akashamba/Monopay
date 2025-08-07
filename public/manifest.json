@@ -1,6 +1,6 @@
 {
-  "name": "MonopolyPay - Digital Banking for Board Games",
-  "short_name": "MonopolyPay",
+  "name": "Monopay - Digital Banking for Board Games",
+  "short_name": "Monopay",
   "description": "Modern banking app for Monopoly games with secure transactions and real-time balance tracking",
   "start_url": "/",
   "display": "standalone",

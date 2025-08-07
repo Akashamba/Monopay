@@ -30,7 +30,7 @@ function Header() {
             <span className="text-white text-sm font-bold">M</span>
           </div>
           <span className="font-semibold text-slate-900 dark:text-white">
-            MonopolyPay
+            Monopay
           </span>
         </div>
         <div className="flex items-center space-x-2">
