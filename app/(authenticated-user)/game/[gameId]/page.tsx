@@ -88,13 +88,15 @@ export default function GamePage() {
       if (game.isUserInGame) return <WaitingRoom {...game} />;
       else return <GameJoinConfirmation game={game} />;
     } else if (game.status === "ongoing") {
-      return (
-        <GameScreen
-          game={game}
-          transactionHistory={transactionHistory}
-          isTransactionHistoryLoading={isTransactionHistoryLoading}
-        />
-      );
+      if (game.isUserInGame)
+        return (
+          <GameScreen
+            game={game}
+            transactionHistory={transactionHistory}
+            isTransactionHistoryLoading={isTransactionHistoryLoading}
+          />
+        );
+      else return <GameJoinConfirmation game={game} />;
     }
   }
 }

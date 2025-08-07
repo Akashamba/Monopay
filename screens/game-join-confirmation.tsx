@@ -62,12 +62,24 @@ const GameJoinConfirmation = ({ game }: { game: GameWithPlayers }) => {
           </div>
 
           <div className="mt-7">
-            <p>{creator?.user.name} has invited you to a game</p>
+            {game.status === "waiting" ? (
+              <p>
+                Would you like to join
+                <span className="font-semibold p-1 text-red-600 dark:text-red-400 rounded-sm">
+                  {creator?.user.name.split(" ")[0]}'s
+                </span>
+                game?
+              </p>
+            ) : (
+              <p className="text-muted-foreground">
+                Sorry, you can't join because the game has already started.
+              </p>
+            )}
             <button
               onClick={() => {
                 joinGameMutation.mutate({ code: game.code });
               }}
-              disabled={joinGameMutation.isPending}
+              disabled={joinGameMutation.isPending || game.status != "waiting"}
               className="px-6 py-3 mt-5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full"
             >
               {joinGameMutation.isPending ? (
